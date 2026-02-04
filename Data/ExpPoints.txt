@@ -1,0 +1,46 @@
+Matthew Stafford
+expected rush tds: 				0.060624618
+expected rush yds: 				0.5
+expected pass tds: 				3.1354945
+expected pass yds: 				264.5
+expected interceptions: 		0.6257059
+expected score: 			22.284313
+
+Puka Nacua
+expected tds: 				0.7419374
+expected yds: 				95.5
+expected recs: 				7.5
+expected score: 			21.501625
+
+Davante Adams
+expected tds: 				0.89608806
+expected yds: 				54.5
+expected recs: 				4.5
+expected score: 			15.326529
+
+Kyren Williams
+expected tds: 				0.89608806
+expected yds: 				78.5
+expected recs: 				1.5
+expected score: 			14.726528
+
+Bryce Young
+expected rush tds: 				0.16705407
+expected rush yds: 				18.5
+expected pass tds: 				1.4109869
+expected pass yds: 				193.5
+expected interceptions: 		0.7654679
+expected score: 			14.705337
+
+Tetairoa McMillan
+expected tds: 				0.44183275
+expected yds: 				52.5
+expected recs: 				4.5
+expected score: 			12.400996
+
+Rico Dowdle
+expected tds: 				0.52452457
+expected yds: 				65.5
+expected recs: 				2.5
+expected score: 			12.197147
+
