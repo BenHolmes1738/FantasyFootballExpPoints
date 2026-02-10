@@ -1,0 +1,73 @@
+package com.exppoints.fantasy;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+
+public class Main {
+
+    /**
+     * main function
+     * controls general flow of program
+     */
+    public static void main(String[] args) {
+        String getFile = "Data/Lines.txt";
+        String setFile = "ExpPoints.txt";
+
+        ArrayList<Player> players = new ArrayList<>();
+
+        InputStream is = Main.class
+                .getClassLoader()
+                .getResourceAsStream(getFile);
+
+        if (is == null) {
+            throw new IllegalStateException("Resource not found");
+        }
+
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+            String name;
+            String position;
+            
+            do {
+                name = br.readLine();
+                position = br.readLine();
+                Player player = new Player(name, position);
+                System.out.println("player: " + name);
+                if ("QB".equals(position)) {
+                    ReadingWriting.readQB(player, br);
+                } else {
+                    ReadingWriting.readNonQB(player, br);
+                }
+
+                players.add(player);
+
+            } while ((br.readLine()) != null);
+            
+            //try {
+                QuickSort.quicksort(players);
+                Path output = Paths.get(setFile);
+                Files.writeString(output, "");
+                for (Player p : players) {
+                    if (p.getPosition().equals("QB")) {
+                        ReadingWriting.writeQB(p, output);
+                    } else {
+                        ReadingWriting.writeNonQB(p, output);
+                    }
+                }
+                System.out.println("Successfully wrote to the file.");
+            /*} catch (IOException e) {
+                System.out.println("An error occurred.");
+                e.printStackTrace();
+            }*/
+            
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+        }
+    }
+
+}
