@@ -33,7 +33,7 @@ public class Main {
             String getFile = "Data/Lines.txt";
             String setFile = "ExpPoints.txt";
 
-            ArrayList<Player> players = new ArrayList<>();
+            ArrayList<GamePlayer> players = new ArrayList<>();
 
             InputStream is = Main.class
                     .getClassLoader()
@@ -50,7 +50,7 @@ public class Main {
                 do {
                     name = br.readLine();
                     position = br.readLine();
-                    Player player = new Player(name, position);
+                    GamePlayer player = new GamePlayer(name, position);
                     System.out.println("player: " + name);
                     if ("QB".equals(position)) {
                         ReadingWriting.readQB(player, br);
@@ -63,10 +63,11 @@ public class Main {
                 } while ((br.readLine()) != null);
                 
                 //try {
-                    QuickSort.quicksort(players);
+                    QuickSort qSort = new QuickSort<>();
+                    qSort.quicksort(players);
                     Path output = Paths.get(setFile);
                     Files.writeString(output, "");
-                    for (Player p : players) {
+                    for (GamePlayer p : players) {
                         if (p.getPosition().equals("QB")) {
                             ReadingWriting.writeQB(p, output);
                         } else {

@@ -7,7 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
 public class ReadingWriting {
-    public static void readQB(Player player, BufferedReader br) {
+    public static void readQB(GamePlayer player, BufferedReader br) {
         String td;
         String yds;
         String pyds;
@@ -27,7 +27,7 @@ public class ReadingWriting {
 
             pyds = br.readLine();
             float py = Float.parseFloat(pyds);
-            player.setPYds(py);
+            player.setPassYds(py);
 
             ptd = br.readLine();
             float ptdPct = Float.parseFloat(ptd);
@@ -44,7 +44,7 @@ public class ReadingWriting {
         }
     }
 
-    public static void readNonQB(Player player, BufferedReader br) {
+    public static void readNonQB(GamePlayer player, BufferedReader br) {
         String td;
         String yds;
         String rec;
@@ -69,13 +69,13 @@ public class ReadingWriting {
         }
     }
 
-    public static void writeQB(Player p, Path output) {
+    public static void writeQB(GamePlayer p, Path output) {
         try {
         Files.writeString(output, p.getName() + 
                             "\nexpected rush tds: \t\t\t\t" + p.getExpTds() + 
                             "\nexpected rush yds: \t\t\t\t" + p.getYds() + 
                             "\nexpected pass tds: \t\t\t\t" + p.getExpPTDs() + 
-                            "\nexpected pass yds: \t\t\t\t" + p.getPYds() +
+                            "\nexpected pass yds: \t\t\t\t" + p.getPassYds() +
                             "\nexpected interceptions: \t\t" + p.getExpInts() +
                             "\nexpected score: \t\t\t" + p.getQBScore() + "\n\n",
                             StandardOpenOption.CREATE, StandardOpenOption.APPEND);
@@ -84,7 +84,7 @@ public class ReadingWriting {
         }
     }
 
-    public static void writeNonQB(Player p, Path output) {
+    public static void writeNonQB(GamePlayer p, Path output) {
         try {
         Files.writeString(output, p.getName() + 
                             "\nexpected tds: \t\t\t\t" + p.getExpTds() + 

@@ -3,13 +3,13 @@ package com.exppoints.fantasy;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class QuickSort {
+public class QuickSort<P extends Player> {
 
-    public static void quicksort(ArrayList<Player> arr) {
+    public void quicksort(ArrayList<P> arr) {
         quicksort(arr, 0, arr.size() - 1);
     }
 
-    private static void quicksort(ArrayList<Player> arr, int left, int right) {
+    private void quicksort(ArrayList<P> arr, int left, int right) {
         if (left >= right) {
             return;
         }
@@ -19,7 +19,7 @@ public class QuickSort {
         quicksort(arr, pivotIndex + 1, right);
     }
 
-    private static int partition(ArrayList<Player> arr, int left, int right) {
+    private int partition(ArrayList<P> arr, int left, int right) {
         Player pivot = arr.get(right);
         int i = left - 1;
 
