@@ -1,7 +1,6 @@
 package com.exppoints.fantasy;
-/**
- * team object
- */
+
+// class for players to project upcoming game
 public class GamePlayer extends Player {
     private final String position;
     private float yds;
@@ -13,6 +12,7 @@ public class GamePlayer extends Player {
     private float ints;
     private float expInts;
 
+    // constructor
     public GamePlayer(String name, String position) {
         super(name);
         this.position = position;
@@ -23,6 +23,7 @@ public class GamePlayer extends Player {
         this.intPercent = 0;
     }
 
+    // getters and setters
     public String getPosition() {
         return this.position;
     }
@@ -51,6 +52,15 @@ public class GamePlayer extends Player {
         return this.ints;
     }
 
+    public void setYds(float yds) {
+        this.yds = yds;
+    }
+
+    public void setInts(float ints) {
+        this.ints = ints;
+    }
+
+    // calculate expected points based on PPR scoring
     @Override
     public float getScore() {
         if (this.position.equals("QB")) {
@@ -60,33 +70,30 @@ public class GamePlayer extends Player {
         }
     }
 
+    // i think this is redundant but im not going to get rid of yet since im not sure
     public float getQBScore() {
         return (float)(this.getExpTds()*6+this.getYds()*0.1+this.getExpPTDs()*4+this.getPassYds()*0.04+this.getExpInts()*-2);
     }
 
+    // sets td percent, then converts to expected tds
     public void setTdPercent(float tdPercent) {
         this.tdPercent = tdPercent;
         this.expTD = (float) Math.log(1-tdPercent) * -1;
     }
 
-    public void setYds(float yds) {
-        this.yds = yds;
-    }
-
+    // sets pass td percent, then converts to expected pass tds
     public void setPTdPercent(float ptdPercent) {
         this.pTDpercent = ptdPercent;
         this.exppTD = (float) Math.log(1-ptdPercent) * -1;
     }
 
+    // sets int percent, then converts to expected ints
     public void setIntPercent(float intPercent) {
         this.pTDpercent = intPercent;
         this.expInts = (float) Math.log(1-intPercent) * -1;
     }
 
-    public void setInts(float ints) {
-        this.ints = ints;
-    }
-
+    // converts odds to percent chance of scoring a td
     public float convertTdOddsToPct(float odds) {
         if (odds == 0) {
             return 0;

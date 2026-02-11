@@ -3,6 +3,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
+// get user input for which players to scrape for
 public class GetUserInput {
     public static List<String> getInput() {
         

@@ -10,8 +10,11 @@ import org.openqa.selenium.chrome.ChromeOptions;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 
+
 public class Scraper {
+    // scrape player odds from bettingpros
     public List<String> scrape(String player) {
+        // setup headless chrome driver
         WebDriverManager.chromedriver().setup();
 
         ChromeOptions options = new ChromeOptions();
@@ -21,6 +24,7 @@ public class Scraper {
 
         WebDriver driver = new ChromeDriver(options);
 
+        // scrape!
         try {
             driver.get("https://www.bettingpros.com/nfl/odds/player-futures/" + player + "/");
             Thread.sleep(5000);
@@ -33,7 +37,7 @@ public class Scraper {
                 odds.add(tdElement.get(i).getText());
             }
             
-            if (odds != null) return odds;
+            return odds;
             
         } catch (Exception e) {
             e.printStackTrace();

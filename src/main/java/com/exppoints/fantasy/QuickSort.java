@@ -3,6 +3,7 @@ package com.exppoints.fantasy;
 import java.util.ArrayList;
 import java.util.Collections;
 
+// quick sort
 public class QuickSort<P extends Player> {
 
     public void quicksort(ArrayList<P> arr) {

@@ -6,7 +6,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
+// various functions for reading and writing to files
 public class ReadingWriting {
+    // read odds for QB from file
     public static void readQB(GamePlayer player, BufferedReader br) {
         String td;
         String yds;
@@ -44,6 +46,7 @@ public class ReadingWriting {
         }
     }
 
+    // read odds for non QB from file
     public static void readNonQB(GamePlayer player, BufferedReader br) {
         String td;
         String yds;
@@ -69,6 +72,7 @@ public class ReadingWriting {
         }
     }
 
+    // write QB projections to file
     public static void writeQB(GamePlayer p, Path output) {
         try {
         Files.writeString(output, p.getName() + 
@@ -84,6 +88,7 @@ public class ReadingWriting {
         }
     }
 
+    // write non QB projections to file
     public static void writeNonQB(GamePlayer p, Path output) {
         try {
         Files.writeString(output, p.getName() + 

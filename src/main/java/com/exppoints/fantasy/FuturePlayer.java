@@ -1,13 +1,13 @@
 package com.exppoints.fantasy;
-/**
- * team object
- */
+
+// class for players to project future season
 public class FuturePlayer extends Player{
     private float rushTds;
     private float recTds;
     private float passTds;
     private float ints;
 
+    // constructor
     public FuturePlayer(String name) {
         super(name);
         this.rushTds = 0;
@@ -16,6 +16,7 @@ public class FuturePlayer extends Player{
         this.ints = 0;
     }
 
+    // getters and setters
     public float getRushTds() {
         return this.rushTds;
     }
@@ -32,11 +33,6 @@ public class FuturePlayer extends Player{
         return this.ints;
     }
 
-    @Override
-    public float getScore() {
-        return this.rushTds * 6 + this.recTds * 6 + this.rushYds * 0.1f + this.recYds * 0.1f + this.rec + this.passYds * 0.04f + this.passTds * 4 - this.ints * 2;
-    }
-
     public void setRushTds(float rushTds) {
         this.rushTds = rushTds;
     }
@@ -51,5 +47,11 @@ public class FuturePlayer extends Player{
 
     public void setInts(float ints) {
         this.ints = ints;
+    }
+
+    // calculate expected points based on PPR scoring
+    @Override
+    public float getScore() {
+        return this.rushTds * 6 + this.recTds * 6 + this.rushYds * 0.1f + this.recYds * 0.1f + this.rec + this.passYds * 0.04f + this.passTds * 4 - this.ints * 2;
     }
 }

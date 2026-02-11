@@ -8,15 +8,17 @@ import java.nio.file.StandardOpenOption;
 import java.util.List;
 
 public class Futures {
+
     // take string list of players, scrape betting odds for each player
     public List<FuturePlayer> getOdds(List<String> players) {
         // first-last format for player names
         List<FuturePlayer> ret = new java.util.ArrayList<>();
         for (int j = 0; j < players.size(); j++) {
             ret.add(new FuturePlayer(players.get(j)));
-            // players.get(j) will be an input to scraper.
+            // scrape player odds
             Scraper scraper = new Scraper();
             List<String> out = scraper.scrape(players.get(j));
+            // iterate through to find odds for each stat
             for (int i = 0; i < out.size(); i++) {
                 switch (out.get(i)) {
                     case "Total Rushing Touchdowns" -> ret.get(j).setRushTds(Float.parseFloat(out.get(i+5).substring(2)));
@@ -36,7 +38,7 @@ public class Futures {
     }
 
 
-
+    // write player projections to file
     public void write(List<FuturePlayer> ps) {
         //QuickSort.quicksort(ps);
         Path output = Paths.get("ExpFuturePoints.txt");
@@ -63,6 +65,5 @@ public class Futures {
             }
         }
         System.out.println("Successfully wrote to the file.");
-
     }
 } 
