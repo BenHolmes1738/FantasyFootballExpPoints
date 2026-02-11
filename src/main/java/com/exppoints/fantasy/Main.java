@@ -8,6 +8,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 public class Main {
 
@@ -16,58 +18,76 @@ public class Main {
      * controls general flow of program
      */
     public static void main(String[] args) {
-        String getFile = "Data/Lines.txt";
-        String setFile = "ExpPoints.txt";
 
-        ArrayList<Player> players = new ArrayList<>();
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Choose:\n1: Future Season \n2: Upcoming Game\n");
+        String option = scanner.nextLine(); 
+        
+        if (option.equals("1")) {
+            List<String> input = GetUserInput.getInput();
+            Futures futures = new Futures();
+            List<FuturePlayer> out = futures.getOdds(input);
+            futures.write(out);
+        } else if (option.equals("2")) {
 
-        InputStream is = Main.class
-                .getClassLoader()
-                .getResourceAsStream(getFile);
+            String getFile = "Data/Lines.txt";
+            String setFile = "ExpPoints.txt";
 
-        if (is == null) {
-            throw new IllegalStateException("Resource not found");
-        }
+            ArrayList<Player> players = new ArrayList<>();
 
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
-            String name;
-            String position;
-            
-            do {
-                name = br.readLine();
-                position = br.readLine();
-                Player player = new Player(name, position);
-                System.out.println("player: " + name);
-                if ("QB".equals(position)) {
-                    ReadingWriting.readQB(player, br);
-                } else {
-                    ReadingWriting.readNonQB(player, br);
-                }
+            InputStream is = Main.class
+                    .getClassLoader()
+                    .getResourceAsStream(getFile);
 
-                players.add(player);
+            if (is == null) {
+                throw new IllegalStateException("Resource not found");
+            }
 
-            } while ((br.readLine()) != null);
-            
-            //try {
-                QuickSort.quicksort(players);
-                Path output = Paths.get(setFile);
-                Files.writeString(output, "");
-                for (Player p : players) {
-                    if (p.getPosition().equals("QB")) {
-                        ReadingWriting.writeQB(p, output);
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+                String name;
+                String position;
+                
+                do {
+                    name = br.readLine();
+                    position = br.readLine();
+                    Player player = new Player(name, position);
+                    System.out.println("player: " + name);
+                    if ("QB".equals(position)) {
+                        ReadingWriting.readQB(player, br);
                     } else {
-                        ReadingWriting.writeNonQB(p, output);
+                        ReadingWriting.readNonQB(player, br);
                     }
-                }
-                System.out.println("Successfully wrote to the file.");
-            /*} catch (IOException e) {
-                System.out.println("An error occurred.");
-                e.printStackTrace();
-            }*/
-            
-        } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
+
+                    players.add(player);
+
+                } while ((br.readLine()) != null);
+                
+                //try {
+                    QuickSort.quicksort(players);
+                    Path output = Paths.get(setFile);
+                    Files.writeString(output, "");
+                    for (Player p : players) {
+                        if (p.getPosition().equals("QB")) {
+                            ReadingWriting.writeQB(p, output);
+                        } else {
+                            ReadingWriting.writeNonQB(p, output);
+                        }
+                    }
+                    System.out.println("Successfully wrote to the file.");
+                /*} catch (IOException e) {
+                    System.out.println("An error occurred.");
+                    e.printStackTrace();
+                }*/
+                
+            } catch (IOException e) {
+                System.err.println("Error reading file: " + e.getMessage());
+            }
+        } else {
+            System.err.println("Please choose between: \n 1: Future Season \n 2: Upcoming Game");
+            return;
         }
+
+        System.out.println("Active threads: " + Thread.activeCount());
     }
 
 }

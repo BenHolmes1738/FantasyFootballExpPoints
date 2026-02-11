@@ -1,3 +1,14 @@
+FOR FUTURE SEASON
+
+enter players to compare with following format:
+first1-last1,first2-last2
+
+check ExpFuturePoints.txt for the results!!
+
+
+
+FOR UPCOMING GAME
+
 input info into resources\Data\Lines.txt with following format:
 
 if quarterback:
