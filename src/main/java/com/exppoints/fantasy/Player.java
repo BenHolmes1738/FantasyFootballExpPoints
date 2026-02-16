@@ -1,13 +1,14 @@
 package com.exppoints.fantasy;
 
+// abstract class for players
 public abstract class Player {
     protected final String name;
-
     protected float rushYds;
     protected float recYds;
     protected float rec;
     protected float passYds;
 
+    // constructor
     public Player(String name) {
         this.name = name;
         this.rushYds = 0;
@@ -16,6 +17,7 @@ public abstract class Player {
         this.passYds = 0;
     }
 
+    // getters and setters
     public String getName() {
         return this.name;
     }
@@ -52,5 +54,6 @@ public abstract class Player {
         this.passYds = passYds;
     }
 
+    // abstract method to calculate expected points
     public abstract float getScore();
 }

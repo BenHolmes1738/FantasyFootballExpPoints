@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Futures {
@@ -39,8 +40,9 @@ public class Futures {
 
 
     // write player projections to file
-    public void write(List<FuturePlayer> ps) {
-        //QuickSort.quicksort(ps);
+    public void write(ArrayList<FuturePlayer> ps) {
+        QuickSort qSort = new QuickSort();
+        qSort.quicksort(ps);
         Path output = Paths.get("ExpFuturePoints.txt");
         try {
             Files.writeString(output, "");

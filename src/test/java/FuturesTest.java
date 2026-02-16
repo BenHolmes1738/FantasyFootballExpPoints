@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -15,7 +16,7 @@ public class FuturesTest {
         List<String> input = new java.util.ArrayList<>();
         input.add("cam-ward");
         Futures futures = new Futures();
-        List<FuturePlayer> out = futures.getOdds(input);
+        ArrayList<FuturePlayer> out = new ArrayList(futures.getOdds(input));
         for (FuturePlayer n:out) {
             System.out.println(n.getName() 
             + "\n" + n.getRushTds() + "\n" + n.getRecTds() 

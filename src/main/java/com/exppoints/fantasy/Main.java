@@ -26,7 +26,8 @@ public class Main {
         if (option.equals("1")) {
             List<String> input = GetUserInput.getInput();
             Futures futures = new Futures();
-            List<FuturePlayer> out = futures.getOdds(input);
+            ArrayList<FuturePlayer> out = new ArrayList<>(futures.getOdds(input));
+            //List<FuturePlayer> out = futures.getOdds(input);
             futures.write(out);
         } else if (option.equals("2")) {
 
@@ -87,8 +88,6 @@ public class Main {
             System.err.println("Please choose between: \n 1: Future Season \n 2: Upcoming Game");
             return;
         }
-
-        System.out.println("Active threads: " + Thread.activeCount());
     }
 
 }

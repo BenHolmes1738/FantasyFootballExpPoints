@@ -44,3 +44,7 @@ WR
 4.5
 
 check ExpPoints.txt for the results!!
+
+to run, input: 
+mvn clean package
+java -jar target/fantasy-exp-points-1.jar
