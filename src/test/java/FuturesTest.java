@@ -26,6 +26,6 @@ public class FuturesTest {
         }
 
         futures.write(out);
-        assertTrue(out != null && !out.isEmpty(), "Futures should return a non-empty list of FuturePlayers");
+        assertTrue(!out.isEmpty(), "Futures should return a non-empty list of FuturePlayers");
     }
 }

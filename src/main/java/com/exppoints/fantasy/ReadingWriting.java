@@ -2,12 +2,69 @@ package com.exppoints.fantasy;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 
 // various functions for reading and writing to files
 public class ReadingWriting {
+
+    public static void mainRead() {
+        String getFile = "Data/Lines.txt";
+        String setFile = "ExpPoints.txt";
+
+        ArrayList<GamePlayer> players = new ArrayList<>();
+
+        InputStream is = Main.class
+                .getClassLoader()
+                .getResourceAsStream(getFile);
+
+        if (is == null) {
+            throw new IllegalStateException("Resource not found");
+        }
+
+        try (var br = new BufferedReader(new InputStreamReader(is))) {
+            String name;
+            String position;
+            
+            do {
+                name = br.readLine();
+                position = br.readLine();
+                GamePlayer player = new GamePlayer(name, position);
+                System.out.println("player: " + name);
+                if ("QB".equals(position)) {
+                    readQB(player, br);
+                } else {
+                    readNonQB(player, br);
+                }
+
+                players.add(player);
+
+            } while ((br.readLine()) != null);
+            
+            QuickSort qSort = new QuickSort<>();
+            qSort.quicksort(players);
+            Path output = Paths.get(setFile);
+            Files.writeString(output, "");
+            for (GamePlayer p : players) {
+                if (p.getPosition().equals("QB")) {
+                    writeQB(p, output);
+                } else {
+                    writeNonQB(p, output);
+                }
+            }
+            System.out.println("Successfully wrote to the file.");
+            
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+        }
+        
+    }
+
     // read odds for QB from file
     public static void readQB(GamePlayer player, BufferedReader br) {
         String td;
@@ -34,12 +91,12 @@ public class ReadingWriting {
             ptd = br.readLine();
             float ptdPct = Float.parseFloat(ptd);
             ptdPct = player.convertTdOddsToPct(ptdPct);
-            player.setPTdPercent(ptdPct);
+            player.setExpPTds(ptdPct);
 
             ints = br.readLine();
             float intPct = Float.parseFloat(ints);
             intPct = player.convertTdOddsToPct(intPct);
-            player.setIntPercent(intPct);
+            player.setExpInts(intPct);
 
         } catch (IOException e) {
             System.err.println("Error reading QB from file: " + e.getMessage());
