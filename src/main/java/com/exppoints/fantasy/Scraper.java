@@ -39,8 +39,7 @@ public class Scraper {
             
             return odds;
             
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (InterruptedException e) {
         } finally {
             driver.quit();
         }

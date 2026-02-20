@@ -1,7 +1,8 @@
 FOR FUTURE SEASON
 
-enter players to compare with following format:
-first1-last1,first2-last2
+enter players into the text field to compare with following format:
+first1-last1
+then press enter and input a new player!
 
 check ExpFuturePoints.txt for the results!!
 
@@ -46,5 +47,4 @@ WR
 check ExpPoints.txt for the results!!
 
 to run, input: 
-mvn clean package
-java -jar target/fantasy-exp-points-1.jar
+mvn clean javafx:run
