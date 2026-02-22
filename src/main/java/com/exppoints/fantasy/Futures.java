@@ -8,10 +8,12 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.scene.control.TextArea;
+
 public class Futures {
 
     // take string list of players, scrape betting odds for each player
-    public List<FuturePlayer> getOdds(List<String> players) {
+    public static List<FuturePlayer> getOdds(List<String> players) {
         // first-last format for player names
         List<FuturePlayer> ret = new java.util.ArrayList<>();
         for (int j = 0; j < players.size(); j++) {
@@ -44,7 +46,7 @@ public class Futures {
 
 
     // write player projections to file
-    public void write(ArrayList<FuturePlayer> ps) {
+    public static void write(ArrayList<FuturePlayer> ps) {
         QuickSort qSort = new QuickSort();
         qSort.quicksort(ps);
         Path output = Paths.get("ExpFuturePoints.txt");
@@ -71,5 +73,24 @@ public class Futures {
             }
         }
         System.out.println("Successfully wrote to the file.");
+    }
+
+    // write player projections to GUI output
+    public static void writeGUI(ArrayList<FuturePlayer> ps, TextArea outputArea) {
+        
+        outputArea.clear();
+        for (FuturePlayer p : ps) {
+            outputArea.appendText(p.getName() + 
+                                "\nexpected rush tds: \t\t\t\t" + p.getRushTds() + 
+                                "\nexpected rush yds: \t\t\t\t" + p.getRushYds() + 
+                                "\nexpected rec tds: \t\t\t\t" + p.getRecTds() + 
+                                "\nexpected rec yds: \t\t\t\t" + p.getRecYds() + 
+                                "\nexpected recs: \t\t\t\t\t" + p.getRec() + 
+                                "\nexpected pass tds: \t\t\t\t" + p.getPassTds() + 
+                                "\nexpected pass yds: \t\t\t\t" + p.getPassYds() +
+                                "\nexpected interceptions: \t\t" + p.getInts() +
+                                "\nexpected score: \t\t\t" + p.getScore() + "\n\n");
+        }
+        System.out.println("Successfully wrote to the GUI output area.");
     }
 } 
