@@ -1,9 +1,11 @@
-package com.exppoints.fantasy;
+package com.exppoints.fantasy.daterbase;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import com.exppoints.fantasy.player.FuturePlayer;
 
 public class Database {
     private static final String URL = "jdbc:sqlite:fantasy.db";
@@ -70,7 +72,8 @@ public class Database {
         return -1; // not found
     }
 
-    public static void getFuturePlayer(FuturePlayer ret) {
+    public static int getFuturePlayer(FuturePlayer ret) {
+        int returnCode = -1;
         String sql  = "SELECT * FROM future_players WHERE name = '%s';".formatted(ret.getName());
         try (Connection conn = connect();
              Statement stmt = conn.createStatement();
@@ -84,9 +87,52 @@ public class Database {
                 ret.setPassTds(rs.getFloat("pass_tds"));
                 ret.setPassYds(rs.getFloat("pass_yds"));
                 ret.setInts(rs.getFloat("ints"));
+                returnCode = 0;
             }
         } catch (SQLException e) {
             System.err.println("Error getting future player: " + e.getMessage());
+        } finally {
+            return returnCode;
+        }
+    }
+
+    public static int DoesPlayerExist(String name) {
+        int returnCode = -1;
+        String sql  = "SELECT * FROM future_players WHERE name = '%s';".formatted(name);
+        try (Connection conn = connect();
+             Statement stmt = conn.createStatement();
+             var rs = stmt.executeQuery(sql)) {
+            if (rs.next()) {
+                returnCode = 0;
+            }
+        } catch (SQLException e) {
+            System.err.println("Error getting future player: " + e.getMessage());
+        } finally {
+            return returnCode;
+        }
+    }
+
+    public static String getDate(FuturePlayer player) {
+        String sql = "SELECT created_at FROM future_players WHERE name = '%s';".formatted(player.getName());
+        try (Connection conn = connect();
+             Statement stmt = conn.createStatement();
+             var rs = stmt.executeQuery(sql)) {
+            if (rs.next()) {
+                return rs.getString("created_at");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error getting date: " + e.getMessage());
+        }
+        return "N/A";
+    }
+
+    public static void deleteFuturePlayer(FuturePlayer player) {
+        String sql = "DELETE FROM future_players WHERE name = '%s';".formatted(player.getName());
+        try (Connection conn = connect();
+             Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
+        } catch (SQLException e) {
+            System.err.println("Error deleting future player: " + e.getMessage());
         }
     }
 }

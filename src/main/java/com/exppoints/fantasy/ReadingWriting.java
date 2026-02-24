@@ -10,6 +10,8 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 
+import com.exppoints.fantasy.player.GamePlayer;
+
 // various functions for reading and writing to files
 public class ReadingWriting {
 

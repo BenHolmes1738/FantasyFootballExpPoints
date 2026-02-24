@@ -1,4 +1,4 @@
-package com.exppoints.fantasy;
+package com.exppoints.fantasy.player;
 
 // class for players to project upcoming game
 public class GamePlayer extends Player {

@@ -1,4 +1,4 @@
-package com.exppoints.fantasy;
+package com.exppoints.fantasy.player;
 
 // abstract class for players
 public abstract class Player {

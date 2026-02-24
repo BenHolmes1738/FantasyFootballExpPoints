@@ -8,6 +8,9 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.exppoints.fantasy.daterbase.Database;
+import com.exppoints.fantasy.player.FuturePlayer;
+
 import javafx.scene.control.TextArea;
 
 public class Futures {
@@ -20,7 +23,7 @@ public class Futures {
         Scraper scraper = new Scraper();
         for (int j = 0; j < players.size(); j++) {
             ret.add(new FuturePlayer(players.get(j)));
-            int id = Database.findFuturePlayerId(players.get(j));
+            int id = Database.getFuturePlayer(ret.get(j));
             if (id == -1) {
                 // scrape player odds
                 List<String> out = scraper.scrape(players.get(j));
@@ -44,8 +47,6 @@ public class Futures {
                     }
                 }
                 Database.insertFuturePlayer(ret.get(j));
-            } else {
-                Database.getFuturePlayer(ret.get(j));
             }
         }
         return ret;
