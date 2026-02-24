@@ -101,7 +101,30 @@ public class MenuBuilder {
     }
 
     public static void buildGameMenu(Stage stage, Scene scene) {
+        List<String> inputList = new ArrayList<>();
 
+        StackPane gameRoot = new StackPane();
+
+        // back to main menu button
+        Button backButton = new Button("Back");
+        StackPane.setAlignment(backButton, Pos.TOP_LEFT);
+
+        Label label = new Label("Yeah so im not done this yet...");
+        label.setFont(new Font("Comic Sans MS", 30));
+        StackPane.setAlignment(label, Pos.CENTER);
+
+        gameRoot.getChildren().addAll(backButton, label);
+
+        Scene gameScene = new Scene(gameRoot, 1000, 700);
+
+        
+        backButton.setOnAction(e -> {
+            stage.setScene(scene);
+            stage.setTitle("Fantasy Football App");
+        });
+
+        stage.setScene(gameScene);
+        stage.setTitle("Upcoming Game");
     }
 
     public static void enterPress(StackPane loadingPane, TextField playerInput, List<String> inputList, TextArea outputArea) {

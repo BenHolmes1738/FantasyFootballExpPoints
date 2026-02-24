@@ -21,6 +21,7 @@ public class Database {
 
     public static void initDatabaseFuture() {
         String sql = """
+                    ALTER SESSION SET TIMEZONE = '-8.0';
                      CREATE TABLE IF NOT EXISTS future_players (
                       id INTEGER PRIMARY KEY AUTOINCREMENT,
                       name TEXT NOT NULL,
@@ -31,8 +32,8 @@ public class Database {
                       rec REAL,
                       pass_tds REAL,
                       pass_yds REAL,
-                      ints REAL,
-                      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                      ints REAL, 
+                      created_at SESSIONTIMEZONE, CURRENT_TIMESTAMP
                      );""";
 
         try (Connection conn = connect();

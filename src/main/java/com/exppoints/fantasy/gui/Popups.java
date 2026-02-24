@@ -1,5 +1,11 @@
 package com.exppoints.fantasy.gui;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.exppoints.fantasy.daterbase.Database;
 import com.exppoints.fantasy.player.FuturePlayer;
 
@@ -8,6 +14,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 
@@ -19,10 +26,17 @@ public class Popups{
         
         int[] returnCode = {0};
 
+        String lastScrape = Database.getDate(player);
+        Instant instant = Instant.parse(lastScrape.replace(" ", "T") + "Z");
+        ZonedDateTime localLastScrape = instant.atZone(ZoneId.systemDefault());
+
         StackPane root = new StackPane();
-        Label label = new Label("Would you like to rescrape data for '%s'? last scrape for '%s' was on '%s'".formatted(player.getName(), player.getName(), Database.getDate(player)));
+        Label label = new Label("Would you like to rescrape data for %s?\nlast scrape for %s was %s".formatted(player.getName(), player.getName(), StringUtils.substring(localLastScrape.toString(), 0, 19)));
+        label.setTextAlignment(TextAlignment.CENTER);
         Button yes = new Button("Yes");
+        yes.setMinWidth(200);
         Button no = new Button("No");
+        no.setMinWidth(200);
         root.getChildren().addAll(label, yes, no);
         StackPane.setAlignment(label, Pos.TOP_CENTER);
         StackPane.setAlignment(yes, Pos.CENTER_LEFT);
@@ -30,7 +44,7 @@ public class Popups{
 
         
 
-        Scene scene = new Scene(root, 400, 200);
+        Scene scene = new Scene(root, 400, 100);
         
         yes.setOnAction(event -> {
             stage.close();
