@@ -14,31 +14,38 @@ public class Futures {
 
     // take string list of players, scrape betting odds for each player
     public static List<FuturePlayer> getOdds(List<String> players) {
+        Database.initDatabaseFuture();
         // first-last format for player names
         List<FuturePlayer> ret = new java.util.ArrayList<>();
+        Scraper scraper = new Scraper();
         for (int j = 0; j < players.size(); j++) {
             ret.add(new FuturePlayer(players.get(j)));
-            // scrape player odds
-            Scraper scraper = new Scraper();
-            List<String> out = scraper.scrape(players.get(j));
-            // iterate through to find odds for each stat
-            for (int i = 0; i < out.size(); i++) {
-                try {
-                    switch (out.get(i)) {
-                        case "Total Rushing Touchdowns" -> ret.get(j).setRushTds(Float.parseFloat(out.get(i+5).substring(2)));
-                        case "Total Receiving Touchdowns" -> ret.get(j).setRecTds(Float.parseFloat(out.get(i+5).substring(2)));
-                        case "Total Rushing Yards" -> ret.get(j).setRushYds(Float.parseFloat(out.get(i+5).substring(2)));
-                        case "Total Receiving Yards" -> ret.get(j).setRecYds(Float.parseFloat(out.get(i+5).substring(2)));
-                        case "Total Receptions" -> ret.get(j).setRec(Float.parseFloat(out.get(i+5).substring(2)));
-                        case "Total Passing Yards" -> ret.get(j).setPassYds(Float.parseFloat(out.get(i+5).substring(2)));
-                        case "Total Passing Touchdowns" -> ret.get(j).setPassTds(Float.parseFloat(out.get(i+5).substring(2)));
-                        case "Total Interceptions" -> ret.get(j).setInts(Float.parseFloat(out.get(i+5).substring(2)));
-                        default -> {
+            int id = Database.findFuturePlayerId(players.get(j));
+            if (id == -1) {
+                // scrape player odds
+                List<String> out = scraper.scrape(players.get(j));
+                // iterate through to find odds for each stat
+                for (int i = 0; i < out.size(); i++) {
+                    try {
+                        switch (out.get(i)) {
+                            case "Total Rushing Touchdowns" -> ret.get(j).setRushTds(Float.parseFloat(out.get(i+5).substring(2)));
+                            case "Total Receiving Touchdowns" -> ret.get(j).setRecTds(Float.parseFloat(out.get(i+5).substring(2)));
+                            case "Total Rushing Yards" -> ret.get(j).setRushYds(Float.parseFloat(out.get(i+5).substring(2)));
+                            case "Total Receiving Yards" -> ret.get(j).setRecYds(Float.parseFloat(out.get(i+5).substring(2)));
+                            case "Total Receptions" -> ret.get(j).setRec(Float.parseFloat(out.get(i+5).substring(2)));
+                            case "Total Passing Yards" -> ret.get(j).setPassYds(Float.parseFloat(out.get(i+5).substring(2)));
+                            case "Total Passing Touchdowns" -> ret.get(j).setPassTds(Float.parseFloat(out.get(i+5).substring(2)));
+                            case "Total Interceptions" -> ret.get(j).setInts(Float.parseFloat(out.get(i+5).substring(2)));
+                            default -> {
+                            }
                         }
+                    } catch (NumberFormatException e) {
+                        System.err.println("Error parsing odds for " + ret.get(j).getName() + ": " + e.getMessage());
                     }
-                } catch (NumberFormatException e) {
-                    System.err.println("Error parsing odds for " + ret.get(j).getName() + ": " + e.getMessage());
                 }
+                Database.insertFuturePlayer(ret.get(j));
+            } else {
+                Database.getFuturePlayer(ret.get(j));
             }
         }
         return ret;
