@@ -6,6 +6,7 @@ then press enter and input a new player!
 
 check ExpFuturePoints.txt for the results!!
 
+also, only ashton-jeanty, cam-ward, and joe-burrow have projected stats right now... :[
 
 
 FOR UPCOMING GAME
