@@ -6,8 +6,8 @@ public class GamePlayer extends Player {
     private float yds;
     private float tdPercent;
     private float expTD;
-    //private float pTDpercent;
-    //private float intPercent;
+    private float pTDpercent;
+    private float intPercent;
     private float exppTD;
     private float ints;
     private float expInts;
@@ -18,9 +18,9 @@ public class GamePlayer extends Player {
         this.position = position;
         this.yds = 0;
         this.tdPercent = 0;
-        //this.pTDpercent = 0;
+        this.pTDpercent = 0;
         this.ints = 0;
-        //this.intPercent = 0;
+        this.intPercent = 0;
     }
 
     // getters and setters
@@ -75,15 +75,30 @@ public class GamePlayer extends Player {
         return (float)(this.getExpTds()*6+this.getYds()*0.1+this.getExpPTDs()*4+this.getPassYds()*0.04+this.getExpInts()*-2);
     }
 
+    public void setTds(float odds) {
+        this.tdPercent = convertTdOddsToPct(odds);
+        this.expTD = (float) Math.log(1-tdPercent) * -1;
+    }
+
     // sets td percent, then converts to expected tds
     public void setTdPercent(float tdPercent) {
         this.tdPercent = tdPercent;
         this.expTD = (float) Math.log(1-tdPercent) * -1;
     }
 
+    public void setPassTds(float odds) {
+        this.pTDpercent = convertTdOddsToPct(odds);
+        this.exppTD = (float) Math.log(1-pTDpercent) * -1;
+    }
+
     // sets pass td percent, then converts to expected pass tds
     public void setExpPTds(float ptdPercent) {
         this.exppTD = (float) Math.log(1-ptdPercent) * -1;
+    }
+
+    public void setInt(float odds) {
+        this.intPercent = convertTdOddsToPct(odds);
+        this.expInts = (float) Math.log(1-intPercent) * -1;
     }
 
     // sets int percent, then converts to expected ints

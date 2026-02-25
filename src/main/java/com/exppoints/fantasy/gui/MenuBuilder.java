@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.exppoints.fantasy.Futures;
+import com.exppoints.fantasy.Games;
 import com.exppoints.fantasy.daterbase.Database;
 import com.exppoints.fantasy.player.FuturePlayer;
+import com.exppoints.fantasy.player.GamePlayer;
 
 import javafx.concurrent.Task;
 import javafx.geometry.Pos;
@@ -105,18 +107,48 @@ public class MenuBuilder {
 
         StackPane gameRoot = new StackPane();
 
+        // loading pop up while scraping
+        StackPane loadingPane = new StackPane();
+        Label loadingLabel = new Label("Scraping...");
+        loadingLabel.setFont(new Font("Comic Sans MS", 30));
+        loadingPane.getChildren().add(loadingLabel);
+        StackPane.setAlignment(loadingLabel, Pos.CENTER);
+        loadingPane.setVisible(false);
+
+        // input area for player names
+        VBox inputArea = new VBox();
+        inputArea.setAlignment(Pos.CENTER_LEFT);
+        Label gameLabel = new Label("enter players...");
+        TextField playerInput = new TextField();
+        playerInput.setMaxWidth(200);
+        inputArea.getChildren().addAll(gameLabel, playerInput);
+
         // back to main menu button
         Button backButton = new Button("Back");
         StackPane.setAlignment(backButton, Pos.TOP_LEFT);
+
+        // output area for projections
+        TextArea outputArea = new TextArea();
+        outputArea.setEditable(false);
+        outputArea.setMaxWidth(700);
+        StackPane.setAlignment(outputArea, Pos.CENTER_RIGHT);
 
         Label label = new Label("Yeah so im not done this yet...");
         label.setFont(new Font("Comic Sans MS", 30));
         StackPane.setAlignment(label, Pos.CENTER);
 
-        gameRoot.getChildren().addAll(backButton, label);
+        gameRoot.getChildren().addAll(inputArea, backButton, outputArea, label);
 
         Scene gameScene = new Scene(gameRoot, 1000, 700);
 
+        // when enter pressed, scrape for given player, add to list, output projections, write to file 
+        playerInput.setOnKeyPressed(e -> {
+            switch (e.getCode()) {
+                case ENTER -> {
+                    enterPressGame(loadingPane, playerInput, inputList, outputArea);
+                }
+            }
+        });
         
         backButton.setOnAction(e -> {
             stage.setScene(scene);
@@ -154,6 +186,40 @@ public class MenuBuilder {
             ArrayList<FuturePlayer> out = task.getValue();
             Futures.write(out);
             Futures.writeGUI(out, outputArea);
+            loadingPane.setVisible(false);
+            playerInput.clear();
+        });
+
+        new Thread(task).start();
+    }
+
+    public static void enterPressGame(StackPane loadingPane, TextField playerInput, List<String> inputList, TextArea outputArea) {
+        loadingPane.setVisible(true);
+        String input = playerInput.getText();
+        inputList.add(input);
+        /*
+        GamePlayer player = new GamePlayer(input, "rb");
+        
+        int id = DatabaseGame.getGamePlayer(player);
+        if (id != -1) {
+            // check if need rescrape data
+            int rescrape = Popups.reScrapePrompt(player);
+            if (rescrape == 1) {
+                DatabaseGame.deleteGamePlayer(player);
+            }
+        }
+        */
+        Task<ArrayList<GamePlayer>> task = new Task<>() {
+            @Override
+            protected ArrayList<GamePlayer> call() {
+                return new ArrayList<>(Games.getOdds(inputList));
+            }
+        };
+
+        task.setOnSucceeded(workerStateEvent -> {
+            ArrayList<GamePlayer> out = task.getValue();
+            Games.write(out);
+            Games.writeGUI(out, outputArea);
             loadingPane.setVisible(false);
             playerInput.clear();
         });

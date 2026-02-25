@@ -13,7 +13,7 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 
 public class Scraper {
     // scrape player odds from bettingpros
-    public List<String> scrape(String player) {
+    public List<String> scrape(String player, String link) {
         // setup headless chrome driver
         WebDriverManager.chromedriver().setup();
 
@@ -26,7 +26,7 @@ public class Scraper {
 
         // scrape!
         try {
-            driver.get("https://www.bettingpros.com/nfl/odds/player-futures/" + player + "/");
+            driver.get(link + player + "/");
             Thread.sleep(5000);
 
             List<WebElement> tdElement = driver.findElements(By.cssSelector("span.typography.odds-cell__line, span.typography.odds-market-label"));
