@@ -135,11 +135,7 @@ public class MenuBuilder<P extends Player> {
         outputArea.setMaxWidth(700);
         StackPane.setAlignment(outputArea, Pos.CENTER_RIGHT);
 
-        Label label = new Label("Yeah so im not done this yet...");
-        label.setFont(new Font("Comic Sans MS", 30));
-        StackPane.setAlignment(label, Pos.CENTER);
-
-        gameRoot.getChildren().addAll(inputArea, backButton, outputArea, label);
+        gameRoot.getChildren().addAll(inputArea, backButton, outputArea);
 
         Scene gameScene = new Scene(gameRoot, 1000, 700);
 

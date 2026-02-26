@@ -82,9 +82,9 @@ public class DatabaseGame {
                 ret.setRushYds(rs.getFloat("rush_yds"));
                 ret.setRecYds(rs.getFloat("rec_yds"));
                 ret.setRec(rs.getFloat("rec"));
-                ret.setPassTds(rs.getFloat("pass_tds"));
+                ret.setExpPTds(rs.getFloat("pass_tds"));
                 ret.setPassYds(rs.getFloat("pass_yds"));
-                ret.setInts(rs.getFloat("ints"));
+                ret.setExpInts(rs.getFloat("ints"));
                 returnCode = 0;
             }
         } catch (SQLException e) {

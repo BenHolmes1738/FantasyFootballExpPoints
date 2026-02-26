@@ -67,6 +67,13 @@ public class GamePlayer extends Player {
         this.exppTD = expPTD;
     }
 
+    public void setExpectedPassTouchdowns(float odds, float line) {
+        float percent = convertTdOddsToPct(odds);
+        int lineInt = (int)(line += 0.5f);
+        this.exppTD = solveLambda(percent, lineInt);
+        System.out.println("expected pass tds: " + this.exppTD);
+    }
+
     public void setInts(float odds) {
         this.intPercent = convertTdOddsToPct(odds);
         this.expInts = (float) Math.log(1-this.intPercent) * -1;
@@ -75,6 +82,12 @@ public class GamePlayer extends Player {
     // sets int percent, then converts to expected ints
     public void setExpInts(float expInts) {
         this.expInts = expInts;
+    }
+
+    public void setExpectedInterceptions(float odds, float line) {
+        float percent = convertTdOddsToPct(odds);
+        int lineInt = (int)(line += 0.5f);
+        this.expInts = solveLambda(percent, lineInt);
     }
 
     // converts odds to percent chance of scoring a td
@@ -87,5 +100,37 @@ public class GamePlayer extends Player {
         } else {
             return 100/(100+odds);
         }
+    }
+
+    public float solveLambda(float p, int n) {
+        float low = 0.0f;
+        float high = 10.0f;
+
+        for (int iter = 0; iter < 100; iter++) {
+            float mid = (low + high) / 2;
+
+            float poissonTail = 1.0f - poissonCDF(mid, n-1);
+
+            if (poissonTail > p) {
+                high = mid;
+            } else {
+                low = mid;
+            }
+        }
+        return (low + high) / 2;
+    }
+
+    private float poissonCDF(float lambda, int k) {
+        float sum = 0.0f;
+        double term = Math.exp(-lambda);
+
+        sum += term;
+
+        for (int i = 1; i <= k; i++) {
+            term *= lambda / i;
+            sum += term;
+        }
+
+        return sum;
     }
 }

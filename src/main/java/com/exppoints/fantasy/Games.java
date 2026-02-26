@@ -33,12 +33,36 @@ public class Games {
                     try {
                         switch (out.get(i)) {
                             case "Anytime Touchdown Scorer" -> ret.get(j).setTds(Float.parseFloat(out.get(i+3)));
-                            case "Rushing Yards Over/Under" -> ret.get(j).setRushYds(Float.parseFloat(out.get(i+5).substring(2)));
-                            case "Receiving Yards Over/Under" -> ret.get(j).setRecYds(Float.parseFloat(out.get(i+5).substring(2)));
-                            case "Receptions Over/Under" -> ret.get(j).setRec(Float.parseFloat(out.get(i+5).substring(2)));
-                            case "Passing Yards Over/Under" -> ret.get(j).setPassYds(Float.parseFloat(out.get(i+5).substring(2)));
-                            case "Total Passing Touchdowns" -> ret.get(j).setPassTds(Float.parseFloat(out.get(i+5).substring(2)));
-                            case "Total Interceptions" -> ret.get(j).setInts(Float.parseFloat(out.get(i+5).substring(2)));
+                            case "Rushing Yards Over/Under" -> ret.get(j).setRushYds(Float.parseFloat(out.get(i+9).substring(2)));
+                            case "Receiving Yards Over/Under" -> ret.get(j).setRecYds(Float.parseFloat(out.get(i+9).substring(2)));
+                            case "Receptions Over/Under" -> ret.get(j).setRec(Float.parseFloat(out.get(i+9).substring(2)));
+                            case "Passing Yards Over/Under" -> ret.get(j).setPassYds(Float.parseFloat(out.get(i+9).substring(2)));
+                            case "Passing Touchdowns Over/Under" -> {
+                                float line = Float.parseFloat(out.get(i+9).substring(2));
+                                String oddsStr = out.get(i+10);
+                                int start = 1;
+                                int end = oddsStr.length()-1;
+                                oddsStr = oddsStr.substring(start, end);
+                                float odds = Float.parseFloat(oddsStr);
+                                if (line < 1) {
+                                    ret.get(j).setPassTds(odds);
+                                } else {
+                                    ret.get(j).setExpectedPassTouchdowns(odds, line);
+                                }
+                            }
+                            case "Interceptions Over/Under" -> {
+                                float line = Float.parseFloat(out.get(i+9).substring(2));
+                                String oddsStr = out.get(i+10);
+                                int start = 1;
+                                int end = oddsStr.length()-1;
+                                oddsStr = oddsStr.substring(start, end);
+                                float odds = Float.parseFloat(oddsStr);
+                                if (line < 1) {
+                                    ret.get(j).setInts(odds);
+                                } else {
+                                    ret.get(j).setExpectedInterceptions(odds, line);
+                                }
+                            }
                             default -> {
                             }
                         }

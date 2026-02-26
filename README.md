@@ -1,51 +1,16 @@
-FOR FUTURE SEASON
+Pick a functionality:
+Future Season Projections OR Upcoming Game Projections
+type a player into the text field with format "first-last" and hit enter!
 
-enter players into the text field to compare with following format:
-first1-last1
-then press enter and input a new player!
-
-check ExpFuturePoints.txt for the results!!
-
-also, only ashton-jeanty, cam-ward, and joe-burrow have projected stats right now... :[
-
-
-FOR UPCOMING GAME
-
-input info into resources\Data\Lines.txt with following format:
-
-if quarterback:
-NAME
-QB
-Rushing TD Line
-Rushing yards Line
-Passing yards Line
-Passing TD Line
-Interception Line
-
-other positions:
-NAME
-POSITION
-Anytime TD Line
-Total yards Line
-receptions Line
-
-Ex:
-
-Bryce Young
-QB
-550
-18.5
-193.5
--310
--115
-
-Tetairoa McMillan
-WR
-180
-52.5
-4.5
-
-check ExpPoints.txt for the results!!
+List of players with lines currently available:
+for futures:
+    joe-burrow
+    ashton-jeanty
+    cam-ward
+for games:
+    sam darnold
+    jaxon-smith-njigba
+    drake-maye
 
 to run, input: 
 mvn clean javafx:run

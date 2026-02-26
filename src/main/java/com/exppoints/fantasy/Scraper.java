@@ -29,7 +29,7 @@ public class Scraper {
             driver.get(link + player + "/");
             Thread.sleep(5000);
 
-            List<WebElement> tdElement = driver.findElements(By.cssSelector("span.typography.odds-cell__line, span.typography.odds-market-label"));
+            List<WebElement> tdElement = driver.findElements(By.cssSelector("span.typography.odds-cell__line, span.typography.odds-market-label, span.typography.odds-cell__cost"));
             
             List<String> odds = new java.util.ArrayList<>();
             //for (WebElement n:tdElement) {
