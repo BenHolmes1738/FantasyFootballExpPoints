@@ -22,7 +22,7 @@ public class Games {
         List<GamePlayer> ret = new java.util.ArrayList<>();
         Scraper scraper = new Scraper();
         for (int j = 0; j < players.size(); j++) {
-            ret.add(new GamePlayer(players.get(j), "rb"));
+            ret.add(new GamePlayer(players.get(j)));
             int id = DatabaseGame.getGamePlayer(ret.get(j));
             if (id == -1) {
                 // scrape player odds
@@ -66,13 +66,13 @@ public class Games {
         for (GamePlayer p : ps) {
             try {
             Files.writeString(output, p.getName() + 
-                                "\nexpected rush tds: \t\t\t\t" + p.getExpTds() + 
+                                "\nexpected tds: \t\t\t\t\t" + p.getExpTds() + 
                                 "\nexpected rush yds: \t\t\t\t" + p.getRushYds() + 
                                 "\nexpected rec yds: \t\t\t\t" + p.getRecYds() + 
                                 "\nexpected recs: \t\t\t\t\t" + p.getRec() + 
                                 "\nexpected pass tds: \t\t\t\t" + p.getExpPTDs() + 
                                 "\nexpected pass yds: \t\t\t\t" + p.getPassYds() +
-                                "\nexpected interceptions: \t\t" + p.getInts() +
+                                "\nexpected interceptions: \t\t\t" + p.getExpInts() +
                                 "\nexpected score: \t\t\t" + p.getScore() + "\n\n",
                                 StandardOpenOption.CREATE, StandardOpenOption.APPEND);
             } catch (IOException e) {
@@ -88,13 +88,13 @@ public class Games {
         outputArea.clear();
         for (GamePlayer p : ps) {
             outputArea.appendText(p.getName() + 
-                                "\nexpected rush tds: \t\t\t\t" + p.getExpTds() + 
+                                "\nexpected tds: \t\t\t\t\t" + p.getExpTds() + 
                                 "\nexpected rush yds: \t\t\t\t" + p.getRushYds() + 
                                 "\nexpected rec yds: \t\t\t\t" + p.getRecYds() + 
                                 "\nexpected recs: \t\t\t\t\t" + p.getRec() + 
                                 "\nexpected pass tds: \t\t\t\t" + p.getExpPTDs() + 
                                 "\nexpected pass yds: \t\t\t\t" + p.getPassYds() +
-                                "\nexpected interceptions: \t\t" + p.getInts() +
+                                "\nexpected interceptions: \t\t\t" + p.getExpInts() +
                                 "\nexpected score: \t\t\t" + p.getScore() + "\n\n");
         }
         System.out.println("Successfully wrote to the GUI output area.");

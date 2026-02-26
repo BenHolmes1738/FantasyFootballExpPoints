@@ -6,8 +6,10 @@ import java.util.List;
 import com.exppoints.fantasy.Futures;
 import com.exppoints.fantasy.Games;
 import com.exppoints.fantasy.daterbase.Database;
+import com.exppoints.fantasy.daterbase.DatabaseGame;
 import com.exppoints.fantasy.player.FuturePlayer;
 import com.exppoints.fantasy.player.GamePlayer;
+import com.exppoints.fantasy.player.Player;
 
 import javafx.concurrent.Task;
 import javafx.geometry.Pos;
@@ -21,7 +23,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-public class MenuBuilder {
+public class MenuBuilder<P extends Player> {
     public static void buildMainMenu(Stage stage) {
         // main menu
         StackPane root = new StackPane();
@@ -169,7 +171,8 @@ public class MenuBuilder {
         int id = Database.getFuturePlayer(player);
         if (id != -1) {
             // check if need rescrape data
-            int rescrape = Popups.reScrapePrompt(player);
+            String time = Database.getDate(player);
+            int rescrape = Popups.reScrapePrompt(player.getName(), time);
             if (rescrape == 1) {
                 Database.deleteFuturePlayer(player);
             }
@@ -197,18 +200,18 @@ public class MenuBuilder {
         loadingPane.setVisible(true);
         String input = playerInput.getText();
         inputList.add(input);
-        /*
-        GamePlayer player = new GamePlayer(input, "rb");
+        
+        GamePlayer player = new GamePlayer(input);
         
         int id = DatabaseGame.getGamePlayer(player);
         if (id != -1) {
             // check if need rescrape data
-            int rescrape = Popups.reScrapePrompt(player);
+            int rescrape = Popups.reScrapePrompt(player.getName(), DatabaseGame.getDate(player));
             if (rescrape == 1) {
                 DatabaseGame.deleteGamePlayer(player);
             }
         }
-        */
+        
         Task<ArrayList<GamePlayer>> task = new Task<>() {
             @Override
             protected ArrayList<GamePlayer> call() {

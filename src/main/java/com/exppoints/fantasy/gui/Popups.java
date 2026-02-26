@@ -6,9 +6,6 @@ import java.time.ZonedDateTime;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.exppoints.fantasy.daterbase.Database;
-import com.exppoints.fantasy.player.FuturePlayer;
-
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -21,17 +18,17 @@ import javafx.stage.Stage;
 public class Popups{
 
 
-    public static int reScrapePrompt(FuturePlayer player) {
+    public static int reScrapePrompt(String name, String time) {
         Stage stage = new Stage();
         
         int[] returnCode = {0};
 
-        String lastScrape = Database.getDate(player);
-        Instant instant = Instant.parse(lastScrape.replace(" ", "T") + "Z");
+        //String lastScrape = Database.getDate(player);
+        Instant instant = Instant.parse(time.replace(" ", "T") + "Z");
         ZonedDateTime localLastScrape = instant.atZone(ZoneId.systemDefault());
 
         StackPane root = new StackPane();
-        Label label = new Label("Would you like to rescrape data for %s?\nlast scrape for %s was %s".formatted(player.getName(), player.getName(), StringUtils.substring(localLastScrape.toString(), 0, 19)));
+        Label label = new Label("Would you like to rescrape data for %s?\nlast scrape for %s was %s".formatted(name, name, StringUtils.substring(localLastScrape.toString(), 0, 19)));
         label.setTextAlignment(TextAlignment.CENTER);
         Button yes = new Button("Yes");
         yes.setMinWidth(200);

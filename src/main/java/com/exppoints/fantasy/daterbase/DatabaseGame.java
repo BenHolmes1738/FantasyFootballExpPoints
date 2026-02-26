@@ -78,13 +78,13 @@ public class DatabaseGame {
              Statement stmt = conn.createStatement();
              var rs = stmt.executeQuery(sql)) {
             if (rs.next()) {
-                ret.setTds(rs.getFloat("tds"));
+                ret.setExpTds(rs.getFloat("tds"));
                 ret.setRushYds(rs.getFloat("rush_yds"));
                 ret.setRecYds(rs.getFloat("rec_yds"));
                 ret.setRec(rs.getFloat("rec"));
                 ret.setPassTds(rs.getFloat("pass_tds"));
                 ret.setPassYds(rs.getFloat("pass_yds"));
-                ret.setInt(rs.getFloat("ints"));
+                ret.setInts(rs.getFloat("ints"));
                 returnCode = 0;
             }
         } catch (SQLException e) {
