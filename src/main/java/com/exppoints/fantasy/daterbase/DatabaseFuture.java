@@ -4,22 +4,23 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import com.exppoints.fantasy.player.GamePlayer;
+import com.exppoints.fantasy.player.FuturePlayer;
 
-public class DatabaseGame extends Database<GamePlayer> {
+public class DatabaseFuture extends Database<FuturePlayer> {
 
-    public DatabaseGame() {
-        super("game");
+    public DatabaseFuture() {
+        super("future");
     }
 
     @Override
     public void initDatabase() {
         String sql = """
-                     CREATE TABLE IF NOT EXISTS game_players (
+                     CREATE TABLE IF NOT EXISTS future_players (
                       id INTEGER PRIMARY KEY AUTOINCREMENT,
                       name TEXT NOT NULL,
-                      tds REAL,
+                      rush_tds REAL,
                       rush_yds REAL,
+                      rec_tds REAL,
                       rec_yds REAL,
                       rec REAL,
                       pass_tds REAL,
@@ -37,24 +38,24 @@ public class DatabaseGame extends Database<GamePlayer> {
     }
 
     @Override
-    public void insertPlayer(GamePlayer player) {
+    public void insertPlayer(FuturePlayer player) {
         String sql = """
-                     INSERT INTO game_players (name, tds, rush_yds, rec_yds, rec, pass_tds, pass_yds, ints)
-                     VALUES ('%s', %f, %f, %f, %f, %f, %f, %f);""".formatted(
-                        player.getName(), player.getExpTds(), player.getRushYds(), player.getRecYds(),
-                        player.getRec(), player.getExpPTds(), player.getPassYds(), player.getExpInts());
+                     INSERT INTO future_players (name, rush_tds, rush_yds, rec_tds, rec_yds, rec, pass_tds, pass_yds, ints)
+                     VALUES ('%s', %f, %f, %f, %f, %f, %f, %f, %f);""".formatted(
+                        player.getName(), player.getRushTds(), player.getRushYds(), player.getRecTds(), player.getRecYds(),
+                        player.getRec(), player.getPassTds(), player.getPassYds(), player.getInts());
         System.out.println(sql);
         try (Connection conn = connect();
              Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
         } catch (SQLException e) {
-            System.err.println("Error inserting game player: " + e.getMessage());
+            System.err.println("Error inserting future player: " + e.getMessage());
         }
     }
 
     @Override
     public int findPlayerId(String name) {
-        String sql = "SELECT id FROM game_players WHERE name = '%s';".formatted(name);
+        String sql = "SELECT id FROM future_players WHERE name = '%s';".formatted(name);
         try (Connection conn = connect();
              Statement stmt = conn.createStatement();
              var rs = stmt.executeQuery(sql)) {
@@ -62,30 +63,31 @@ public class DatabaseGame extends Database<GamePlayer> {
                 return rs.getInt("id");
             }
         } catch (SQLException e) {
-            System.err.println("Error finding game player ID: " + e.getMessage());
+            System.err.println("Error finding future player ID: " + e.getMessage());
         }
         return -1;
     }
 
     @Override
-    public int getPlayer(GamePlayer ret) {
+    public int getPlayer(FuturePlayer ret) {
         int returnCode = -1;
-        String sql  = "SELECT * FROM game_players WHERE name = '%s';".formatted(ret.getName());
+        String sql  = "SELECT * FROM future_players WHERE name = '%s';".formatted(ret.getName());
         try (Connection conn = connect();
              Statement stmt = conn.createStatement();
              var rs = stmt.executeQuery(sql)) {
             if (rs.next()) {
-                ret.setExpTds(rs.getFloat("tds"));
+                ret.setRushTds(rs.getFloat("rush_tds"));
                 ret.setRushYds(rs.getFloat("rush_yds"));
+                ret.setRecTds(rs.getFloat("rec_tds"));
                 ret.setRecYds(rs.getFloat("rec_yds"));
                 ret.setRec(rs.getFloat("rec"));
-                ret.setExpPTds(rs.getFloat("pass_tds"));
+                ret.setPassTds(rs.getFloat("pass_tds"));
                 ret.setPassYds(rs.getFloat("pass_yds"));
-                ret.setExpInts(rs.getFloat("ints"));
+                ret.setInts(rs.getFloat("ints"));
                 returnCode = 0;
             }
         } catch (SQLException e) {
-            System.err.println("Error getting game player: " + e.getMessage());
+            System.err.println("Error getting future player: " + e.getMessage());
         } finally {
             return returnCode;
         }
@@ -94,7 +96,7 @@ public class DatabaseGame extends Database<GamePlayer> {
     @Override
     public int DoesPlayerExist(String name) {
         int returnCode = -1;
-        String sql  = "SELECT * FROM game_players WHERE name = '%s';".formatted(name);
+        String sql  = "SELECT * FROM future_players WHERE name = '%s';".formatted(name);
         try (Connection conn = connect();
              Statement stmt = conn.createStatement();
              var rs = stmt.executeQuery(sql)) {
@@ -102,18 +104,18 @@ public class DatabaseGame extends Database<GamePlayer> {
                 returnCode = 0;
             }
         } catch (SQLException e) {
-            System.err.println("Error getting game player: " + e.getMessage());
+            System.err.println("Error getting future player: " + e.getMessage());
         } finally {
             return returnCode;
         }
     }
 
     @Override
-    public String getDate(GamePlayer player) {
-        String sql = "SELECT created_at FROM game_players WHERE name = '%s';".formatted(player.getName());
+    public String getDate(FuturePlayer player) {
+        String sql = "SELECT created_at FROM future_players WHERE name = '%s';".formatted(player.getName());
         try (Connection conn = connect();
-             Statement stmt = conn.createStatement();
-             var rs = stmt.executeQuery(sql)) {
+            Statement stmt = conn.createStatement();
+            var rs = stmt.executeQuery(sql)) {
             if (rs.next()) {
                 return rs.getString("created_at");
             }
@@ -124,13 +126,13 @@ public class DatabaseGame extends Database<GamePlayer> {
     }
 
     @Override
-    public void deletePlayer(GamePlayer player) {
-        String sql = "DELETE FROM game_players WHERE name = '%s';".formatted(player.getName());
+    public void deletePlayer(FuturePlayer player) {
+        String sql = "DELETE FROM future_players WHERE name = '%s';".formatted(player.getName());
         try (Connection conn = connect();
-             Statement stmt = conn.createStatement()) {
+            Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
         } catch (SQLException e) {
-            System.err.println("Error deleting game player: " + e.getMessage());
+            System.err.println("Error deleting future player: " + e.getMessage());
         }
     }
 }

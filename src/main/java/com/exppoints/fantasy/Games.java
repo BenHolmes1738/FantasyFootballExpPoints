@@ -17,17 +17,25 @@ public class Games {
 
     // take string list of players, scrape betting odds for each player
     public static List<GamePlayer> getOdds(List<String> players) {
-        DatabaseGame.initDatabaseGame();
-        // first-last format for player names
+        
+        // initialize database, player list, scraper
+        DatabaseGame db = new DatabaseGame();
+        db.initDatabase();
         List<GamePlayer> ret = new java.util.ArrayList<>();
         Scraper scraper = new Scraper();
+
+        // iter thru players
         for (int j = 0; j < players.size(); j++) {
+
+            // add player to player list, check if player is in database
             ret.add(new GamePlayer(players.get(j)));
-            int id = DatabaseGame.getGamePlayer(ret.get(j));
+            int id = db.getPlayer(ret.get(j));
             if (id == -1) {
+
                 // scrape player odds
                 List<String> out = scraper.scrape(players.get(j), "https://www.bettingpros.com/nfl/odds/player-props/");
-                // iterate through to find odds for each stat
+                
+                // iter thru scraped data to find odds for desired stats
                 for (int i = 0; i < out.size(); i++) {
                     System.out.println(out.get(i));
                     try {
@@ -45,9 +53,9 @@ public class Games {
                                 oddsStr = oddsStr.substring(start, end);
                                 float odds = Float.parseFloat(oddsStr);
                                 if (line < 1) {
-                                    ret.get(j).setPassTds(odds);
+                                    ret.get(j).setPTds(odds);
                                 } else {
-                                    ret.get(j).setExpectedPassTouchdowns(odds, line);
+                                    ret.get(j).setPTdsLambda(odds, line);
                                 }
                             }
                             case "Interceptions Over/Under" -> {
@@ -60,7 +68,7 @@ public class Games {
                                 if (line < 1) {
                                     ret.get(j).setInts(odds);
                                 } else {
-                                    ret.get(j).setExpectedInterceptions(odds, line);
+                                    ret.get(j).setIntsLambda(odds, line);
                                 }
                             }
                             default -> {
@@ -70,7 +78,7 @@ public class Games {
                         System.err.println("Error parsing odds for " + ret.get(j).getName() + ": " + e.getMessage());
                     }
                 }
-                DatabaseGame.insertGamePlayer(ret.get(j));
+                db.insertPlayer(ret.get(j));
             }
         }
         return ret;
@@ -79,8 +87,12 @@ public class Games {
 
     // write player projections to file
     public static void write(ArrayList<GamePlayer> ps) {
+
+        // sort players by expected score
         QuickSort qSort = new QuickSort();
         qSort.quicksort(ps);
+
+        // write to text file
         Path output = Paths.get("ExpPoints.txt");
         try {
             Files.writeString(output, "");
@@ -94,7 +106,7 @@ public class Games {
                                 "\nexpected rush yds: \t\t\t\t" + p.getRushYds() + 
                                 "\nexpected rec yds: \t\t\t\t" + p.getRecYds() + 
                                 "\nexpected recs: \t\t\t\t\t" + p.getRec() + 
-                                "\nexpected pass tds: \t\t\t\t" + p.getExpPTDs() + 
+                                "\nexpected pass tds: \t\t\t\t" + p.getExpPTds() + 
                                 "\nexpected pass yds: \t\t\t\t" + p.getPassYds() +
                                 "\nexpected interceptions: \t\t\t" + p.getExpInts() +
                                 "\nexpected score: \t\t\t" + p.getScore() + "\n\n",
@@ -109,6 +121,7 @@ public class Games {
     // write player projections to GUI output
     public static void writeGUI(ArrayList<GamePlayer> ps, TextArea outputArea) {
         
+        // clear output area, write projections to GUI
         outputArea.clear();
         for (GamePlayer p : ps) {
             outputArea.appendText(p.getName() + 
@@ -116,7 +129,7 @@ public class Games {
                                 "\nexpected rush yds: \t\t\t\t" + p.getRushYds() + 
                                 "\nexpected rec yds: \t\t\t\t" + p.getRecYds() + 
                                 "\nexpected recs: \t\t\t\t\t" + p.getRec() + 
-                                "\nexpected pass tds: \t\t\t\t" + p.getExpPTDs() + 
+                                "\nexpected pass tds: \t\t\t\t" + p.getExpPTds() + 
                                 "\nexpected pass yds: \t\t\t\t" + p.getPassYds() +
                                 "\nexpected interceptions: \t\t\t" + p.getExpInts() +
                                 "\nexpected score: \t\t\t" + p.getScore() + "\n\n");

@@ -8,7 +8,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.exppoints.fantasy.daterbase.Database;
+import com.exppoints.fantasy.daterbase.DatabaseFuture;
 import com.exppoints.fantasy.player.FuturePlayer;
 
 import javafx.scene.control.TextArea;
@@ -17,17 +17,25 @@ public class Futures {
 
     // take string list of players, scrape betting odds for each player
     public static List<FuturePlayer> getOdds(List<String> players) {
-        Database.initDatabaseFuture();
-        // first-last format for player names
+        
+        // initialize database, player list, scraper
+        DatabaseFuture db = new DatabaseFuture();
+        db.initDatabase();
         List<FuturePlayer> ret = new java.util.ArrayList<>();
         Scraper scraper = new Scraper();
+
+        // iter thru players
         for (int j = 0; j < players.size(); j++) {
+            
+            // add player to player list, check if player is in database
             ret.add(new FuturePlayer(players.get(j)));
-            int id = Database.getFuturePlayer(ret.get(j));
+            int id = db.getPlayer(ret.get(j));
             if (id == -1) {
+
                 // scrape player odds
                 List<String> out = scraper.scrape(players.get(j), "https://www.bettingpros.com/nfl/odds/player-futures/");
-                // iterate through to find odds for each stat
+                
+                // iter thru scraped data to find odds for desired stats
                 for (int i = 0; i < out.size(); i++) {
                     try {
                         switch (out.get(i)) {
@@ -46,7 +54,7 @@ public class Futures {
                         System.err.println("Error parsing odds for " + ret.get(j).getName() + ": " + e.getMessage());
                     }
                 }
-                Database.insertFuturePlayer(ret.get(j));
+                db.insertPlayer(ret.get(j));
             }
         }
         return ret;
@@ -55,8 +63,12 @@ public class Futures {
 
     // write player projections to file
     public static void write(ArrayList<FuturePlayer> ps) {
+
+        // sort players by expected score
         QuickSort qSort = new QuickSort();
         qSort.quicksort(ps);
+        
+        // write to text file
         Path output = Paths.get("ExpFuturePoints.txt");
         try {
             Files.writeString(output, "");
@@ -86,6 +98,7 @@ public class Futures {
     // write player projections to GUI output
     public static void writeGUI(ArrayList<FuturePlayer> ps, TextArea outputArea) {
         
+        // clear output area, write projections to GUI
         outputArea.clear();
         for (FuturePlayer p : ps) {
             outputArea.appendText(p.getName() + 
@@ -101,4 +114,4 @@ public class Futures {
         }
         System.out.println("Successfully wrote to the GUI output area.");
     }
-} 
+}

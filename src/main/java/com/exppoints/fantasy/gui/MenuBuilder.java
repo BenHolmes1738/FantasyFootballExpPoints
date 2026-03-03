@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.exppoints.fantasy.Futures;
 import com.exppoints.fantasy.Games;
-import com.exppoints.fantasy.daterbase.Database;
+import com.exppoints.fantasy.daterbase.DatabaseFuture;
 import com.exppoints.fantasy.daterbase.DatabaseGame;
 import com.exppoints.fantasy.player.FuturePlayer;
 import com.exppoints.fantasy.player.GamePlayer;
@@ -163,14 +163,15 @@ public class MenuBuilder<P extends Player> {
         inputList.add(input);
 
         FuturePlayer player = new FuturePlayer(input);
-
-        int id = Database.getFuturePlayer(player);
+        
+        DatabaseFuture db = new DatabaseFuture();
+        int id = db.getPlayer(player);
         if (id != -1) {
             // check if need rescrape data
-            String time = Database.getDate(player);
+            String time = db.getDate(player);
             int rescrape = Popups.reScrapePrompt(player.getName(), time);
             if (rescrape == 1) {
-                Database.deleteFuturePlayer(player);
+                db.deletePlayer(player);
             }
         }
 
@@ -199,12 +200,13 @@ public class MenuBuilder<P extends Player> {
         
         GamePlayer player = new GamePlayer(input);
         
-        int id = DatabaseGame.getGamePlayer(player);
+        DatabaseGame db = new DatabaseGame();
+        int id = db.getPlayer(player);
         if (id != -1) {
             // check if need rescrape data
-            int rescrape = Popups.reScrapePrompt(player.getName(), DatabaseGame.getDate(player));
+            int rescrape = Popups.reScrapePrompt(player.getName(), db.getDate(player));
             if (rescrape == 1) {
-                DatabaseGame.deleteGamePlayer(player);
+                db.deletePlayer(player);
             }
         }
         

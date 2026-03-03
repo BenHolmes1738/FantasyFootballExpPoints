@@ -49,7 +49,6 @@ public class FuturePlayer extends Player{
         this.ints = ints;
     }
 
-    // calculate expected points based on PPR scoring
     @Override
     public float getScore() {
         float ret = this.rushTds * 6 + this.recTds * 6 + this.rushYds * 0.1f + this.recYds * 0.1f + this.rec + this.passYds * 0.04f + this.passTds * 4 - this.ints * 2;
