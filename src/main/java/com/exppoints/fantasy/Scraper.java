@@ -19,7 +19,7 @@ public class Scraper {
         WebDriverManager.chromedriver().setup();
 
         ChromeOptions options = new ChromeOptions();
-        //options.addArguments("--headless");
+        options.addArguments("--headless");
         options.addArguments("--disable-gpu");
 
         WebDriver driver = new ChromeDriver(options);

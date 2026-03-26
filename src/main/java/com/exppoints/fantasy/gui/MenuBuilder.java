@@ -18,6 +18,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -25,16 +28,61 @@ import javafx.stage.Stage;
 
 public class MenuBuilder<P extends Player> {
     public static void buildMainMenu(Stage stage) {
+        Image druski = new Image(MenuBuilder.class.getResourceAsStream("/Data/druskiHenry.png"));
+        Image losMcCaffery = new Image(MenuBuilder.class.getResourceAsStream("/Data/losMcCaffery.png"));
+        ImageView druskiView = new ImageView(druski);
+        ImageView losView = new ImageView(losMcCaffery);
+
+        druskiView.setFitHeight(700);
+        druskiView.setFitWidth(500);
+        losView.setFitHeight(700);
+        losView.setFitWidth(500);
+        losView.setScaleX(-1);
+
+        HBox images = new HBox();
+        images.setAlignment(Pos.CENTER);
+        images.getChildren().addAll(losView, druskiView);
+
         // main menu
         StackPane root = new StackPane();
-        Label label = new Label("Welcome... Choose an option...");
+        Label label = new Label("Fantasy Football Projection Calc");
+        label.setStyle(
+            "-fx-font-weight: bold;" + 
+            "-fx-font-size: 30px;" + 
+            "-fx-font-family: 'Bebas Neue';" + 
+            "-fx-text-fill: gold;" +
+            "-fx-background-color: black;" + 
+            "-fx-background-radius: 10px;"
+        );
         StackPane.setAlignment(label, Pos.TOP_CENTER);
         VBox options = new VBox();
         options.setAlignment(Pos.CENTER);
         Button button1 = new Button("Future Season");
+        button1.setStyle(
+            "-fx-background-color: #000000;" +
+            "-fx-text-fill: gold;" +
+            "-fx-font-size: 15px;" +
+            "-fx-font-weight: bold;" +
+            "-fx-background-radius: 12;" +
+            "-fx-padding: 10 25;" + 
+            "-fx-border-color: gold;" + 
+            "-fx-border-width: 2;" +
+            "-fx-border-radius: 12;"
+        );
         Button button2 = new Button("Upcoming Game");
+        button2.setStyle(
+            "-fx-background-color: #000000;" +
+            "-fx-text-fill: gold;" +
+            "-fx-font-size: 15px;" +
+            "-fx-font-weight: bold;" +
+            "-fx-background-radius: 12;" +
+            "-fx-padding: 10 25;" + 
+            "-fx-border-color: gold;" + 
+            "-fx-border-width: 2;" +
+            "-fx-border-radius: 12;"
+        );
         options.getChildren().addAll(button1, button2);
-        root.getChildren().addAll(label, options);
+        root.getChildren().addAll(images, label, options);
 
         Scene scene = new Scene(root, 1000, 700);
 
@@ -42,9 +90,63 @@ public class MenuBuilder<P extends Player> {
         button1.setOnAction(event -> {
             buildFutureMenu(stage, scene);
         });
+        button1.setOnMouseEntered(e -> button1.setStyle(
+            "-fx-background-color: gold;" +
+            "-fx-text-fill: black;" +
+            "-fx-font-size: 15px;" +
+            "-fx-font-weight: bold;" +
+            "-fx-background-radius: 12;" +
+            "-fx-padding: 10 25;" + 
+            "-fx-border-color: gold;" + 
+            "-fx-border-width: 2;"+
+            "-fx-border-radius: 12;"
+        ));
+        button1.setOnMouseExited(e -> button1.setStyle(
+            "-fx-background-color: #000000;" +
+            "-fx-text-fill: gold;" +
+            "-fx-font-size: 15px;" +
+            "-fx-font-weight: bold;" +
+            "-fx-background-radius: 12;" +
+            "-fx-padding: 10 25;" + 
+            "-fx-border-color: gold;" + 
+            "-fx-border-width: 2;"+
+            "-fx-border-radius: 12;"
+        ));
 
         button2.setOnAction(event -> {
             buildGameMenu(stage, scene);
+        });
+        button2.setOnMouseEntered(e -> button2.setStyle(
+            "-fx-background-color: gold;" +
+            "-fx-text-fill: black;" +
+            "-fx-font-size: 15px;" +
+            "-fx-font-weight: bold;" +
+            "-fx-background-radius: 12;" +
+            "-fx-padding: 10 25;" + 
+            "-fx-border-color: gold;" + 
+            "-fx-border-width: 2;"+
+            "-fx-border-radius: 12;"
+        ));
+        button2.setOnMouseExited(e -> button2.setStyle(
+            "-fx-background-color: #000000;" +
+            "-fx-text-fill: gold;" +
+            "-fx-font-size: 15px;" +
+            "-fx-font-weight: bold;" +
+            "-fx-background-radius: 12;" +
+            "-fx-padding: 10 25;" + 
+            "-fx-border-color: gold;" + 
+            "-fx-border-width: 2;"+
+            "-fx-border-radius: 12;"
+        ));
+
+        stage.widthProperty().addListener((obs, oldVal, newVal) -> {
+            druskiView.setFitWidth(newVal.intValue() / 2);
+            losView.setFitWidth(newVal.intValue() / 2);
+        });
+
+        stage.heightProperty().addListener((obs, oldVal, newVal) -> {
+            druskiView.setFitHeight(newVal.intValue());
+            losView.setFitHeight(newVal.intValue());
         });
 
         stage.setScene(scene);
