@@ -3,6 +3,7 @@ package com.exppoints.fantasy.daterbase;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import com.exppoints.fantasy.player.GamePlayer;
 
@@ -132,5 +133,21 @@ public class DatabaseGame extends Database<GamePlayer> {
         } catch (SQLException e) {
             System.err.println("Error deleting game player: " + e.getMessage());
         }
+    }
+
+    @Override
+    public ArrayList<String> getList() {
+        ArrayList<String> ret = new ArrayList<>();
+        String sql = "SELECT name FROM game_players;";
+        try (Connection conn = connect();
+            Statement stmt = conn.createStatement();
+            var rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                ret.add(rs.getString("name"));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error getting game player list: " + e.getMessage());
+        }
+        return ret;
     }
 }

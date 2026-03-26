@@ -15,9 +15,9 @@ import javafx.concurrent.Task;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -171,9 +171,18 @@ public class MenuBuilder<P extends Player> {
         VBox inputArea = new VBox();
         inputArea.setAlignment(Pos.CENTER_LEFT);
         Label futureLabel = new Label("enter players...");
-        TextField playerInput = new TextField();
-        playerInput.setMaxWidth(200);
-        inputArea.getChildren().addAll(futureLabel, playerInput);
+
+        ComboBox<String> pInput = new ComboBox<>();
+        pInput.setMaxWidth(200);
+        DatabaseFuture db = new DatabaseFuture();
+        db.initDatabase();
+        for (String s : db.getList()) {
+            pInput.getItems().add(s);
+        }
+        pInput.setEditable(true);
+        pInput.setPromptText("Enter player name...");
+
+        inputArea.getChildren().addAll(futureLabel, pInput);
 
         // back to main menu button
         Button backButton = new Button("Back");
@@ -190,10 +199,10 @@ public class MenuBuilder<P extends Player> {
         Scene futureScene = new Scene(futureRoot, 1000, 700);
 
         // when enter pressed, scrape for given player, add to list, output projections, write to file 
-        playerInput.setOnKeyPressed(e -> {
+        pInput.setOnKeyPressed(e -> {
             switch (e.getCode()) {
                 case ENTER -> {
-                    enterPress(loadingPane, playerInput, inputList, outputArea);
+                    enterPress(loadingPane, pInput, inputList, outputArea);
                 }
             }
         });
@@ -223,9 +232,18 @@ public class MenuBuilder<P extends Player> {
         VBox inputArea = new VBox();
         inputArea.setAlignment(Pos.CENTER_LEFT);
         Label gameLabel = new Label("enter players...");
-        TextField playerInput = new TextField();
-        playerInput.setMaxWidth(200);
-        inputArea.getChildren().addAll(gameLabel, playerInput);
+
+        ComboBox<String> pInput = new ComboBox<>();
+        pInput.setMaxWidth(200);
+        DatabaseGame db = new DatabaseGame();
+        db.initDatabase();
+        for (String s : db.getList()) {
+            pInput.getItems().add(s);
+        }
+        pInput.setEditable(true);
+        pInput.setPromptText("Enter player name...");
+
+        inputArea.getChildren().addAll(gameLabel, pInput);
 
         // back to main menu button
         Button backButton = new Button("Back");
@@ -242,10 +260,10 @@ public class MenuBuilder<P extends Player> {
         Scene gameScene = new Scene(gameRoot, 1000, 700);
 
         // when enter pressed, scrape for given player, add to list, output projections, write to file 
-        playerInput.setOnKeyPressed(e -> {
+        pInput.setOnKeyPressed(e -> {
             switch (e.getCode()) {
                 case ENTER -> {
-                    enterPressGame(loadingPane, playerInput, inputList, outputArea);
+                    enterPressGame(loadingPane, pInput, inputList, outputArea);
                 }
             }
         });
@@ -259,9 +277,11 @@ public class MenuBuilder<P extends Player> {
         stage.setTitle("Upcoming Game");
     }
 
-    public static void enterPress(StackPane loadingPane, TextField playerInput, List<String> inputList, TextArea outputArea) {
+    public static void enterPress(StackPane loadingPane, ComboBox<String> pInput, List<String> inputList, TextArea outputArea) {
         loadingPane.setVisible(true);
-        String input = playerInput.getText();
+        String input = pInput.getEditor().getText();
+
+        //String input = pInput.getValue();
         inputList.add(input);
 
         FuturePlayer player = new FuturePlayer(input);
@@ -289,15 +309,17 @@ public class MenuBuilder<P extends Player> {
             Futures.write(out);
             Futures.writeGUI(out, outputArea);
             loadingPane.setVisible(false);
-            playerInput.clear();
+            pInput.setValue(null);
         });
 
         new Thread(task).start();
     }
 
-    public static void enterPressGame(StackPane loadingPane, TextField playerInput, List<String> inputList, TextArea outputArea) {
+    public static void enterPressGame(StackPane loadingPane, ComboBox<String> pInput, List<String> inputList, TextArea outputArea) {
         loadingPane.setVisible(true);
-        String input = playerInput.getText();
+        String input = pInput.getEditor().getText();
+
+        //String input = pInput.getValue();
         inputList.add(input);
         
         GamePlayer player = new GamePlayer(input);
@@ -324,7 +346,7 @@ public class MenuBuilder<P extends Player> {
             Games.write(out);
             Games.writeGUI(out, outputArea);
             loadingPane.setVisible(false);
-            playerInput.clear();
+            pInput.setValue(null);
         });
 
         new Thread(task).start();

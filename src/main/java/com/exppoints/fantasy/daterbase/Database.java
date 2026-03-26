@@ -3,6 +3,7 @@ package com.exppoints.fantasy.daterbase;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 
 public abstract class Database<T> {
@@ -16,6 +17,7 @@ public abstract class Database<T> {
         return DriverManager.getConnection(URL);
     }
 
+    // required database functionalities
     public abstract void initDatabase();
     public abstract void insertPlayer(T player);
     public abstract int findPlayerId(String name);
@@ -23,4 +25,5 @@ public abstract class Database<T> {
     public abstract int DoesPlayerExist(String name);
     public abstract String getDate(T player);
     public abstract void deletePlayer(T player);
+    public abstract ArrayList<String> getList();
 }
