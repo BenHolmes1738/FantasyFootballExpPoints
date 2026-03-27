@@ -5,8 +5,12 @@ import java.util.List;
 
 import com.exppoints.fantasy.Futures;
 import com.exppoints.fantasy.Games;
+import com.exppoints.fantasy.daterbase.Database;
 import com.exppoints.fantasy.daterbase.DatabaseFuture;
 import com.exppoints.fantasy.daterbase.DatabaseGame;
+import com.exppoints.fantasy.handlers.PlayerHandler;
+import com.exppoints.fantasy.handlers.FutureHandler;
+import com.exppoints.fantasy.handlers.GameHandler;
 import com.exppoints.fantasy.player.FuturePlayer;
 import com.exppoints.fantasy.player.GamePlayer;
 import com.exppoints.fantasy.player.Player;
@@ -202,7 +206,9 @@ public class MenuBuilder<P extends Player> {
         pInput.setOnKeyPressed(e -> {
             switch (e.getCode()) {
                 case ENTER -> {
-                    enterPress(loadingPane, pInput, inputList, outputArea);
+                    enterPress(loadingPane, pInput, inputList, outputArea, new FutureHandler());
+
+                    //enterPress(loadingPane, pInput, inputList, outputArea);
                 }
             }
         });
@@ -263,7 +269,10 @@ public class MenuBuilder<P extends Player> {
         pInput.setOnKeyPressed(e -> {
             switch (e.getCode()) {
                 case ENTER -> {
-                    enterPressGame(loadingPane, pInput, inputList, outputArea);
+        
+                    enterPress(loadingPane, pInput, inputList, outputArea, new GameHandler());
+
+                    //enterPressGame(loadingPane, pInput, inputList, outputArea);
                 }
             }
         });
@@ -277,11 +286,44 @@ public class MenuBuilder<P extends Player> {
         stage.setTitle("Upcoming Game");
     }
 
+    public static <P extends Player> void enterPress(StackPane loadingPane, ComboBox<String> pInput, List<String> inputList, TextArea outputArea, PlayerHandler<P> handler) {
+        loadingPane.setVisible(true);
+        String input = pInput.getEditor().getText();
+        inputList.add(input);
+
+        P player = handler.createPlayer(input);
+        
+        int id = handler.getPlayer(player);
+        if (id != -1) {
+            // check if need rescrape data
+            String time = handler.getDate(player);
+            int rescrape = Popups.reScrapePrompt(input, time);
+            if (rescrape == 1) {
+                handler.deletePlayer(player);
+            }
+        }
+
+        Task<ArrayList<P>> task = new Task<>() {
+            @Override
+            protected ArrayList<P> call() {
+                return new ArrayList<>(handler.getOdds(inputList));
+            }
+        };
+
+        task.setOnSucceeded(workerStateEvent -> {
+            ArrayList<P> out = task.getValue();
+            handler.write(out);
+            handler.writeGUI(out, outputArea);
+            loadingPane.setVisible(false);
+            pInput.setValue(null);
+        });
+
+        new Thread(task).start();
+    }
+
     public static void enterPress(StackPane loadingPane, ComboBox<String> pInput, List<String> inputList, TextArea outputArea) {
         loadingPane.setVisible(true);
         String input = pInput.getEditor().getText();
-
-        //String input = pInput.getValue();
         inputList.add(input);
 
         FuturePlayer player = new FuturePlayer(input);
@@ -318,8 +360,6 @@ public class MenuBuilder<P extends Player> {
     public static void enterPressGame(StackPane loadingPane, ComboBox<String> pInput, List<String> inputList, TextArea outputArea) {
         loadingPane.setVisible(true);
         String input = pInput.getEditor().getText();
-
-        //String input = pInput.getValue();
         inputList.add(input);
         
         GamePlayer player = new GamePlayer(input);
