@@ -3,16 +3,11 @@ package com.exppoints.fantasy.gui;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.exppoints.fantasy.Futures;
-import com.exppoints.fantasy.Games;
-import com.exppoints.fantasy.daterbase.Database;
 import com.exppoints.fantasy.daterbase.DatabaseFuture;
 import com.exppoints.fantasy.daterbase.DatabaseGame;
-import com.exppoints.fantasy.handlers.PlayerHandler;
 import com.exppoints.fantasy.handlers.FutureHandler;
 import com.exppoints.fantasy.handlers.GameHandler;
-import com.exppoints.fantasy.player.FuturePlayer;
-import com.exppoints.fantasy.player.GamePlayer;
+import com.exppoints.fantasy.handlers.PlayerHandler;
 import com.exppoints.fantasy.player.Player;
 
 import javafx.concurrent.Task;
@@ -207,8 +202,6 @@ public class MenuBuilder<P extends Player> {
             switch (e.getCode()) {
                 case ENTER -> {
                     enterPress(loadingPane, pInput, inputList, outputArea, new FutureHandler());
-
-                    //enterPress(loadingPane, pInput, inputList, outputArea);
                 }
             }
         });
@@ -269,10 +262,7 @@ public class MenuBuilder<P extends Player> {
         pInput.setOnKeyPressed(e -> {
             switch (e.getCode()) {
                 case ENTER -> {
-        
                     enterPress(loadingPane, pInput, inputList, outputArea, new GameHandler());
-
-                    //enterPressGame(loadingPane, pInput, inputList, outputArea);
                 }
             }
         });
@@ -316,77 +306,7 @@ public class MenuBuilder<P extends Player> {
             handler.writeGUI(out, outputArea);
             loadingPane.setVisible(false);
             pInput.setValue(null);
-        });
-
-        new Thread(task).start();
-    }
-
-    public static void enterPress(StackPane loadingPane, ComboBox<String> pInput, List<String> inputList, TextArea outputArea) {
-        loadingPane.setVisible(true);
-        String input = pInput.getEditor().getText();
-        inputList.add(input);
-
-        FuturePlayer player = new FuturePlayer(input);
-        
-        DatabaseFuture db = new DatabaseFuture();
-        int id = db.getPlayer(player);
-        if (id != -1) {
-            // check if need rescrape data
-            String time = db.getDate(player);
-            int rescrape = Popups.reScrapePrompt(player.getName(), time);
-            if (rescrape == 1) {
-                db.deletePlayer(player);
-            }
-        }
-
-        Task<ArrayList<FuturePlayer>> task = new Task<>() {
-            @Override
-            protected ArrayList<FuturePlayer> call() {
-                return new ArrayList<>(Futures.getOdds(inputList));
-            }
-        };
-
-        task.setOnSucceeded(workerStateEvent -> {
-            ArrayList<FuturePlayer> out = task.getValue();
-            Futures.write(out);
-            Futures.writeGUI(out, outputArea);
-            loadingPane.setVisible(false);
-            pInput.setValue(null);
-        });
-
-        new Thread(task).start();
-    }
-
-    public static void enterPressGame(StackPane loadingPane, ComboBox<String> pInput, List<String> inputList, TextArea outputArea) {
-        loadingPane.setVisible(true);
-        String input = pInput.getEditor().getText();
-        inputList.add(input);
-        
-        GamePlayer player = new GamePlayer(input);
-        
-        DatabaseGame db = new DatabaseGame();
-        int id = db.getPlayer(player);
-        if (id != -1) {
-            // check if need rescrape data
-            int rescrape = Popups.reScrapePrompt(player.getName(), db.getDate(player));
-            if (rescrape == 1) {
-                db.deletePlayer(player);
-            }
-        }
-        
-        Task<ArrayList<GamePlayer>> task = new Task<>() {
-            @Override
-            protected ArrayList<GamePlayer> call() {
-                return new ArrayList<>(Games.getOdds(inputList));
-            }
-        };
-
-        task.setOnSucceeded(workerStateEvent -> {
-            ArrayList<GamePlayer> out = task.getValue();
-            Games.write(out);
-            Games.writeGUI(out, outputArea);
-            loadingPane.setVisible(false);
-            pInput.setValue(null);
+            pInput.getEditor().clear();
         });
 
         new Thread(task).start();

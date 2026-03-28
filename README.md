@@ -14,3 +14,7 @@ for games:
 
 to run, input: 
 mvn clean javafx:run
+
+to run python tests: 
+change main to MainTest in pom.xml
+input: py src/test/java/TestHarness.py

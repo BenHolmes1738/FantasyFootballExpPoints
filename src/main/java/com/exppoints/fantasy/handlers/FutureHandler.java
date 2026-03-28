@@ -17,22 +17,29 @@ import javafx.scene.control.TextArea;
 
 
 public class FutureHandler implements PlayerHandler<FuturePlayer> {
-    private DatabaseFuture db;
+    private final DatabaseFuture db;
 
-    public FuturePlayer createPlayer(String name) {
+    public FutureHandler() {
         this.db = new DatabaseFuture();
         db.initDatabase();
+    }
+
+    @Override
+    public FuturePlayer createPlayer(String name) {
         return new FuturePlayer(name);
     }
 
+    @Override
     public int getPlayer(FuturePlayer player) {
         return db.getPlayer(player);
     }
 
+    @Override
     public String getDate(FuturePlayer player) {
         return db.getDate(player);
     }
 
+    @Override
     public void deletePlayer(FuturePlayer player) {
         db.deletePlayer(player);
     }
@@ -41,35 +48,39 @@ public class FutureHandler implements PlayerHandler<FuturePlayer> {
     @Override
     public List<FuturePlayer> getOdds(List<String> players) {
         
-        // initialize database, player list, scraper
-        DatabaseFuture db = new DatabaseFuture();
-        db.initDatabase();
         List<FuturePlayer> ret = new java.util.ArrayList<>();
         Scraper scraper = new Scraper();
 
+        int rem = 0;
         // iter thru players
         for (int j = 0; j < players.size(); j++) {
+            int jr = j - rem;
             
             // add player to player list, check if player is in database
             ret.add(new FuturePlayer(players.get(j)));
-            int id = db.getPlayer(ret.get(j));
+            int id = db.getPlayer(ret.get(jr));
             if (id == -1) {
 
                 // scrape player odds
                 List<String> out = scraper.scrape(players.get(j), "https://www.bettingpros.com/nfl/odds/player-futures/");
-                
+                if (out == null) {
+                    ret.remove(jr);
+                    players.remove(j);
+                    rem++;
+                    continue;
+                }
                 // iter thru scraped data to find odds for desired stats
                 for (int i = 0; i < out.size(); i++) {
                     try {
                         switch (out.get(i)) {
-                            case "Total Rushing Touchdowns" -> ret.get(j).setRushTds(Float.parseFloat(out.get(i+9).substring(2)));
-                            case "Total Receiving Touchdowns" -> ret.get(j).setRecTds(Float.parseFloat(out.get(i+9).substring(2)));
-                            case "Total Rushing Yards" -> ret.get(j).setRushYds(Float.parseFloat(out.get(i+9).substring(2)));
-                            case "Total Receiving Yards" -> ret.get(j).setRecYds(Float.parseFloat(out.get(i+9).substring(2)));
-                            case "Total Receptions" -> ret.get(j).setRec(Float.parseFloat(out.get(i+9).substring(2)));
-                            case "Total Passing Yards" -> ret.get(j).setPassYds(Float.parseFloat(out.get(i+9).substring(2)));
-                            case "Total Passing Touchdowns" -> ret.get(j).setPassTds(Float.parseFloat(out.get(i+9).substring(2)));
-                            case "Total Interceptions" -> ret.get(j).setInts(Float.parseFloat(out.get(i+9).substring(2)));
+                            case "Total Rushing Touchdowns" -> ret.get(jr).setRushTds(Float.parseFloat(out.get(i+9).substring(2)));
+                            case "Total Receiving Touchdowns" -> ret.get(jr).setRecTds(Float.parseFloat(out.get(i+9).substring(2)));
+                            case "Total Rushing Yards" -> ret.get(jr).setRushYds(Float.parseFloat(out.get(i+9).substring(2)));
+                            case "Total Receiving Yards" -> ret.get(jr).setRecYds(Float.parseFloat(out.get(i+9).substring(2)));
+                            case "Total Receptions" -> ret.get(jr).setRec(Float.parseFloat(out.get(i+9).substring(2)));
+                            case "Total Passing Yards" -> ret.get(jr).setPassYds(Float.parseFloat(out.get(i+9).substring(2)));
+                            case "Total Passing Touchdowns" -> ret.get(jr).setPassTds(Float.parseFloat(out.get(i+9).substring(2)));
+                            case "Total Interceptions" -> ret.get(jr).setInts(Float.parseFloat(out.get(i+9).substring(2)));
                             default -> {
                             }
                         }
@@ -77,7 +88,13 @@ public class FutureHandler implements PlayerHandler<FuturePlayer> {
                         System.err.println("Error parsing odds for " + ret.get(j).getName() + ": " + e.getMessage());
                     }
                 }
-                db.insertPlayer(ret.get(j));
+                if (ret.get(jr).getScore() == 0) {
+                    ret.remove(jr);
+                    players.remove(j);
+                    rem++;
+                }else {
+                    db.insertPlayer(ret.get(jr));
+                }
             }
         }
         return ret;

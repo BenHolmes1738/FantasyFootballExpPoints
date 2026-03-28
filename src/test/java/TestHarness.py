@@ -2,16 +2,14 @@ import subprocess
 import random
 import string
 
-JAVA_CMD = [
-    r"C:\Program Files\Apache\Maven\bin\mvn.cmd",
-    "compile",
-    "exec:java",
-    "-Dexec.mainClass=com.exppoints.fantasy.MainTest",
-    "-Dexec.args=PLACEHOLDER"
-]
-
 def run_test(name):
-    cmd = [part if part != "PLACEHOLDER" else name for part in JAVA_CMD]
+    cmd = [
+        r"C:\Users\bende\276Assignments\apache-maven-3.9.11-bin\apache-maven-3.9.11\bin\mvn.cmd",
+        "compile",
+        "exec:java",
+        "-Dexec.mainClass=com.exppoints.fantasy.MainTest",
+        f"-Dexec.args={name}"
+    ]
 
     result = subprocess.run(
         cmd,
@@ -23,6 +21,7 @@ def run_test(name):
 players = ["josh-allen-qb", "bryce-young", "patrick-mahomes", "jim-pine", "yusbdfjhs"]
 
 for p in players:
+    print(f"Running test for player: {p}")
     output = run_test(p)
     print(f"Test for {p}: {output}")
 

@@ -19,20 +19,24 @@ import javafx.scene.control.TextArea;
 public class GameHandler implements PlayerHandler<GamePlayer> {
     private DatabaseGame db;
 
+    @Override
     public GamePlayer createPlayer(String name) {
         this.db = new DatabaseGame();
         db.initDatabase();
         return new GamePlayer(name);
     }
 
+    @Override
     public int getPlayer(GamePlayer player) {
         return db.getPlayer(player);
     }
 
+    @Override
     public String getDate(GamePlayer player) {
         return db.getDate(player);
     }
 
+    @Override
     public void deletePlayer(GamePlayer player) {
         db.deletePlayer(player);
     }
@@ -41,14 +45,13 @@ public class GameHandler implements PlayerHandler<GamePlayer> {
     @Override
     public List<GamePlayer> getOdds(List<String> players) {
         
-        // initialize database, player list, scraper
-        DatabaseGame db = new DatabaseGame();
-        db.initDatabase();
         List<GamePlayer> ret = new java.util.ArrayList<>();
         Scraper scraper = new Scraper();
 
+        int rem = 0;
         // iter thru players
         for (int j = 0; j < players.size(); j++) {
+            int jr = j - rem;
 
             // add player to player list, check if player is in database
             ret.add(new GamePlayer(players.get(j)));
@@ -57,7 +60,13 @@ public class GameHandler implements PlayerHandler<GamePlayer> {
 
                 // scrape player odds
                 List<String> out = scraper.scrape(players.get(j), "https://www.bettingpros.com/nfl/odds/player-props/");
-                
+                if (out == null) {
+                    ret.remove(jr);
+                    players.remove(j);
+                    rem++;
+                    continue;
+                }
+
                 // iter thru scraped data to find odds for desired stats
                 for (int i = 0; i < out.size(); i++) {
                     System.out.println(out.get(i));
@@ -101,7 +110,13 @@ public class GameHandler implements PlayerHandler<GamePlayer> {
                         System.err.println("Error parsing odds for " + ret.get(j).getName() + ": " + e.getMessage());
                     }
                 }
-                db.insertPlayer(ret.get(j));
+                if (ret.get(jr).getScore() == 0) {
+                    ret.remove(jr);
+                    players.remove(j);
+                    rem++;
+                }else {
+                    db.insertPlayer(ret.get(jr));
+                }
             }
         }
         return ret;

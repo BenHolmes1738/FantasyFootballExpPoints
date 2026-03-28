@@ -15,6 +15,11 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 public class Scraper {
     // scrape player odds from bettingpros
     public List<String> scrape(String player, String link) {
+
+        if (!player.contains("-")) {
+            return null;
+        }
+
         // setup headless chrome driver
         WebDriverManager.chromedriver().setup();
 
@@ -27,8 +32,6 @@ public class Scraper {
 
         JavascriptExecutor js = (JavascriptExecutor) driver;
 
-        
-
         // scrape!
         try {
             driver.get(link + player + "/");
@@ -39,12 +42,11 @@ public class Scraper {
                 Thread.sleep(10);
             }
 
-            List<WebElement> tdElement = driver.findElements(By.cssSelector("span.typography.odds-cell__line, span.typography.odds-market-label, span.typography.odds-cell__cost"));
-            
+            List<WebElement> element = driver.findElements(By.cssSelector("span.typography.odds-cell__line, span.typography.odds-market-label, span.typography.odds-cell__cost"));
+
             List<String> odds = new java.util.ArrayList<>();
-            //for (WebElement n:tdElement) {
-            for (int i = 0; i < tdElement.size(); i++) {
-                odds.add(tdElement.get(i).getText());
+            for (int i = 0; i < element.size(); i++) {
+                odds.add(element.get(i).getText());
             }
             
             return odds;
