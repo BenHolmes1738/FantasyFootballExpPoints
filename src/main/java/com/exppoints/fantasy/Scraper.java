@@ -24,9 +24,12 @@ public class Scraper {
         WebDriverManager.chromedriver().setup();
 
         ChromeOptions options = new ChromeOptions();
-        //options.addArguments("--headless=new");
+
+        options.addArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36");
+
+        options.addArguments("--headless=new");
         options.addArguments("--disable-gpu");
-        //options.addArguments("--window-size=1920,1080");
+        options.addArguments("--window-size=900,900");
 
         WebDriver driver = new ChromeDriver(options);
 

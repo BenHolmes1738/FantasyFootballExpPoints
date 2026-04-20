@@ -254,7 +254,7 @@ public class MenuBuilder<P extends Player> {
         outputArea.setMaxWidth(700);
         StackPane.setAlignment(outputArea, Pos.CENTER_RIGHT);
 
-        gameRoot.getChildren().addAll(inputArea, backButton, outputArea);
+        gameRoot.getChildren().addAll(inputArea, backButton, outputArea, loadingPane);
 
         Scene gameScene = new Scene(gameRoot, 1000, 700);
 
@@ -278,7 +278,7 @@ public class MenuBuilder<P extends Player> {
 
     public static <P extends Player> void enterPress(StackPane loadingPane, ComboBox<String> pInput, List<String> inputList, TextArea outputArea, PlayerHandler<P> handler) {
         loadingPane.setVisible(true);
-        String input = pInput.getEditor().getText();
+        String input = pInput.getEditor().getText().toLowerCase();
         inputList.add(input);
 
         P player = handler.createPlayer(input);
